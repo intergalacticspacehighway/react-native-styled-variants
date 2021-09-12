@@ -8,17 +8,20 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
+    "web-clean": "rm -rf .expo && expo start --web -c",
     "start": "expo start",
     "test": "jest"
   },
   "dependencies": {
+    "babel-loader": "^8.2.2",
+    "babel-plugin-styled-variants": "file:../babel-plugin",
     "expo": "^40.0.0",
     "expo-splash-screen": "~0.8.1",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-native": "0.63.4",
     "react-native-unimodules": "~0.12.0",
-    "react-native-web": "~0.14.9"
+    "react-native-web": "^0.17.1"
   },
   "devDependencies": {
     "@babel/core": "~7.12.10",

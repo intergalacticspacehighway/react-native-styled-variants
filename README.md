@@ -2,25 +2,16 @@
 
 Create styled variants that are transpiled to StyleSheet during build time
 
-## Installation
+# Run example
 
-```sh
-npm install react-native-styled-variants
 ```
+cd repo/
+yarn
+cd repo/example
+yarn
+yarn web-clean
 
-## Usage
-
-```js
-import StyledVariants from "react-native-styled-variants";
-
-// ...
-
-const result = await StyledVariants.multiply(3, 7);
 ```
-
-## Contributing
-
-See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.
 
 ## License
 
