@@ -1,3 +1,4 @@
+//@ts-nocheck
 import React, { useEffect, useState } from 'react';
 import { Text, Pressable, View } from 'react-native';
 import { useTheme, ThemeProvider, styled } from 'react-native-styled-variants';
