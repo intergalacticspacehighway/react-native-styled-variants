@@ -1,8 +1,12 @@
-# react-native-styled-variants
-
-Create styled variants that are transpiled to StyleSheet during build time
+# React native styled variants
 
 ![alt loki variants](./assets/styled-variants.jpeg)
+
+Create styled variants that are transpiled to StyleSheet during build time. (Utility props - In progress)
+
+# Styled variants Transpilation flow
+
+![alt transpilation flow](./assets/transpile-flow.png)
 
 # Run example
 
