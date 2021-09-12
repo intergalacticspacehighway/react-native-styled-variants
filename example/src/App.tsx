@@ -12,6 +12,7 @@ export default function App() {
     </ThemeProvider>
   );
 }
+
 const AppContainer = () => {
   const [darkMode, setDarkMode] = useState(true);
   const { setTheme } = useTheme();

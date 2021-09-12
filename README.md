@@ -2,6 +2,8 @@
 
 Create styled variants that are transpiled to StyleSheet during build time
 
+![alt loki variants](./assets/styled-variants.jpeg)
+
 # Run example
 
 ```
