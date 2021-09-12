@@ -65,24 +65,33 @@ export const ThemeProvider = (props: IThemeProviderProps) => {
     }
   };
 
-  const setTheme = (newTheme: any) => {
-    for (let key in themeDependentStyleSheetIds) {
-      const styleFn = themeDependentStyleSheetIds[key];
-      styleSheets[key] = StyleSheet.create(
-        styleFn({
-          theme: newTheme,
-          currentBreakpoint,
-          getClosestResponsiveValue: (values: any) =>
-            getClosestResponsiveValue(
-              values,
-              currentBreakpoint,
-              breakpointsArray
-            ),
-        })
-      );
-    }
-    _setTheme(newTheme);
-  };
+  const setTheme = useCallback(
+    (newTheme: any) => {
+      for (let key in themeDependentStyleSheetIds) {
+        const styleFn = themeDependentStyleSheetIds[key];
+        styleSheets[key] = StyleSheet.create(
+          styleFn({
+            theme: newTheme,
+            currentBreakpoint,
+            getClosestResponsiveValue: (values: any) =>
+              getClosestResponsiveValue(
+                values,
+                currentBreakpoint,
+                breakpointsArray
+              ),
+          })
+        );
+      }
+      _setTheme(newTheme);
+    },
+    [
+      _setTheme,
+      breakpointsArray,
+      currentBreakpoint,
+      styleSheets,
+      themeDependentStyleSheetIds,
+    ]
+  );
 
   const setCurrentBreakpoint = useCallback(
     (newBreakpoint: any) => {

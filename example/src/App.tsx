@@ -1,4 +1,3 @@
-//@ts-nocheck
 import React, { useEffect, useState } from 'react';
 import { Text, Pressable, View } from 'react-native';
 import { useTheme, ThemeProvider, styled } from 'react-native-styled-variants';
@@ -13,7 +12,7 @@ export default function App() {
 }
 const AppContainer = () => {
   const [darkMode, setDarkMode] = useState(true);
-  const { theme, setTheme } = useTheme();
+  const { setTheme } = useTheme();
   useEffect(() => {
     if (darkMode) {
       setTheme({
@@ -32,7 +31,7 @@ const AppContainer = () => {
         },
       });
     }
-  }, [darkMode, setTheme, theme]);
+  }, [darkMode, setTheme]);
 
   return (
     <Container>
