@@ -1,0 +1,250 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`test babel transform plugin generates styled component 1`] = `
+"import * as _rnStyledVariants__react from \\"react\\";
+import * as _rnStyledVariants_ from \\"react-native-styled-variants\\";
+
+const StyledText = _rnStyledVariants__react.forwardRef(({style: propStyle, onPressIn: onPressInProp, onPressOut: onPressOutProp, onHoverIn: onHoverInProp , onHoverOut: onHoverOutProp, onFocus: onFocusProp, onBlur: onBlurProp, color, checked, size, ...props}, ref) => {
+  _rnStyledVariants_.useCurrentBreakpoint();
+  _rnStyledVariants_.useTheme();
+
+  const styleSheet = _rnStyledVariants_.useStyleSheet(1, ({
+    theme,
+    currentBreakpoint,
+    getClosestResponsiveValue
+  }) => ({
+    baseStyle: {
+      padding: getClosestResponsiveValue({
+        \\"base\\": 30,
+        \\"md\\": 90,
+        \\"xl\\": 5
+      }, currentBreakpoint),
+      backgroundColor: theme[\\"colors\\"][\\"indigo\\"][\\"500\\"]
+    },
+    color_blue: {
+      color: \\"white\\"
+    },
+    color_indigo: {
+      color: \\"black\\"
+    },
+    checked_true: {
+      color: \\"white\\"
+    },
+    size_md: {
+      padding: 10
+    }
+  }), [\\"theme\\", \\"currentBreakpoint\\"]);
+
+  const style = _rnStyledVariants__react.useMemo(() => {
+    const newStyle = [styleSheet.baseStyle, 
+            styleSheet[\`color_\${color}\`]
+        ,
+            styleSheet[\`checked_\${checked}\`]
+        ,
+            styleSheet[\`size_\${size}\`]
+        , propStyle].filter(Boolean);
+    return newStyle;
+  }, [styleSheet, color, checked, size, propStyle]);
+
+  return <Text onHoverIn={onHoverInProp} onHoverOut={onHoverOutProp} onPressIn={onPressInProp} onPressOut={onPressOutProp} onFocus={onFocusProp} onBlur={onBlurProp} ref={ref} style={style} {...props} />;
+});"
+`;
+
+exports[`test babel transform plugin generates styled component for baseStyle 1`] = `
+"import * as _rnStyledVariants__react from \\"react\\";
+import * as _rnStyledVariants_ from \\"react-native-styled-variants\\";
+
+const StyledPressable = _rnStyledVariants__react.forwardRef(({style: propStyle, onPressIn: onPressInProp, onPressOut: onPressOutProp, onHoverIn: onHoverInProp , onHoverOut: onHoverOutProp, onFocus: onFocusProp, onBlur: onBlurProp,  ...props}, ref) => {
+  _rnStyledVariants_.useTheme();
+
+  const styleSheet = _rnStyledVariants_.useStyleSheet(2, ({
+    theme,
+    currentBreakpoint,
+    getClosestResponsiveValue
+  }) => ({
+    baseStyle: {
+      padding: theme[\\"space\\"][\\"3\\"],
+      backgroundColor: theme[\\"colors\\"][\\"blue\\"][\\"800\\"]
+    }
+  }), [\\"theme\\"]);
+
+  const style = _rnStyledVariants__react.useMemo(() => {
+    const newStyle = [styleSheet.baseStyle, propStyle].filter(Boolean);
+    return newStyle;
+  }, [styleSheet, propStyle]);
+
+  return <Pressable onHoverIn={onHoverInProp} onHoverOut={onHoverOutProp} onPressIn={onPressInProp} onPressOut={onPressOutProp} onFocus={onFocusProp} onBlur={onBlurProp} ref={ref} style={style} {...props} />;
+});"
+`;
+
+exports[`test babel transform plugin verifies base focus styles 1`] = `
+"import * as _rnStyledVariants__react from \\"react\\";
+import * as _rnStyledVariants_ from \\"react-native-styled-variants\\";
+
+const StyledPressable = _rnStyledVariants__react.forwardRef(({style: propStyle, onPressIn: onPressInProp, onPressOut: onPressOutProp, onHoverIn: onHoverInProp , onHoverOut: onHoverOutProp, onFocus: onFocusProp, onBlur: onBlurProp,  ...props}, ref) => {
+  _rnStyledVariants_.useTheme();
+  const {onFocus, onBlur, isFocused} = _rnStyledVariants_.useFocus({onFocus: onFocusProp, onBlur: onBlurProp});
+
+  const styleSheet = _rnStyledVariants_.useStyleSheet(6, ({
+    theme,
+    currentBreakpoint,
+    getClosestResponsiveValue
+  }) => ({
+    baseStyle_focus: {
+      backgroundColor: theme[\\"colors\\"][\\"pressed\\"]
+    },
+    baseStyle: {
+      padding: theme[\\"space\\"][\\"3\\"],
+      backgroundColor: theme[\\"colors\\"][\\"primary\\"]
+    }
+  }), [\\"theme\\"]);
+
+  const style = _rnStyledVariants__react.useMemo(() => {
+    const newStyle = [styleSheet.baseStyle, isFocused ? styleSheet.baseStyle_focus : undefined, propStyle].filter(Boolean);
+    return newStyle;
+  }, [styleSheet, isFocused, propStyle]);
+
+  return <Pressable onHoverIn={onHoverInProp} onHoverOut={onHoverOutProp} onPressIn={onPressInProp} onPressOut={onPressOutProp} onFocus={onFocus} onBlur={onBlur} ref={ref} style={style} {...props} />;
+});"
+`;
+
+exports[`test babel transform plugin verifies base focus styles 2`] = `
+"import * as _rnStyledVariants__react from \\"react\\";
+import * as _rnStyledVariants_ from \\"react-native-styled-variants\\";
+
+const StyledPressable = _rnStyledVariants__react.forwardRef(({style: propStyle, onPressIn: onPressInProp, onPressOut: onPressOutProp, onHoverIn: onHoverInProp , onHoverOut: onHoverOutProp, onFocus: onFocusProp, onBlur: onBlurProp, checked, ...props}, ref) => {
+  _rnStyledVariants_.useTheme();
+  const {onFocus, onBlur, isFocused} = _rnStyledVariants_.useFocus({onFocus: onFocusProp, onBlur: onBlurProp});
+
+  const styleSheet = _rnStyledVariants_.useStyleSheet(7, ({
+    theme,
+    currentBreakpoint,
+    getClosestResponsiveValue
+  }) => ({
+    baseStyle_focus: {
+      backgroundColor: theme[\\"colors\\"][\\"pressed\\"]
+    },
+    baseStyle: {
+      padding: theme[\\"space\\"][\\"3\\"],
+      backgroundColor: theme[\\"colors\\"][\\"primary\\"]
+    },
+    checked_true_focus: {
+      backgroundColor: theme[\\"colors\\"][\\"pressed_checked\\"]
+    },
+    checked_true: {}
+  }), [\\"theme\\"]);
+
+  const style = _rnStyledVariants__react.useMemo(() => {
+    const newStyle = [styleSheet.baseStyle, 
+            styleSheet[\`checked_\${checked}\`]
+        , isFocused ? styleSheet.baseStyle_focus : undefined, isFocused ? styleSheet[\`checked_\${checked}_focus\`] : undefined, propStyle].filter(Boolean);
+    return newStyle;
+  }, [styleSheet, isFocused, checked, propStyle]);
+
+  return <Pressable onHoverIn={onHoverInProp} onHoverOut={onHoverOutProp} onPressIn={onPressInProp} onPressOut={onPressOutProp} onFocus={onFocus} onBlur={onBlur} ref={ref} style={style} {...props} />;
+});"
+`;
+
+exports[`test babel transform plugin verifies base hover styles 1`] = `
+"import * as _rnStyledVariants__react from \\"react\\";
+import * as _rnStyledVariants_ from \\"react-native-styled-variants\\";
+
+const StyledPressable = _rnStyledVariants__react.forwardRef(({style: propStyle, onPressIn: onPressInProp, onPressOut: onPressOutProp, onHoverIn: onHoverInProp , onHoverOut: onHoverOutProp, onFocus: onFocusProp, onBlur: onBlurProp, color, ...props}, ref) => {
+  _rnStyledVariants_.useTheme();
+  const {onHoverIn, onHoverOut, isHovered} = _rnStyledVariants_.useHover({onHoverIn: onHoverInProp, onHoverOut: onHoverOutProp});
+
+  const styleSheet = _rnStyledVariants_.useStyleSheet(3, ({
+    theme,
+    currentBreakpoint,
+    getClosestResponsiveValue
+  }) => ({
+    baseStyle_hover: {
+      backgroundColor: theme[\\"colors\\"][\\"hover\\"]
+    },
+    baseStyle: {
+      padding: theme[\\"space\\"][\\"3\\"],
+      backgroundColor: theme[\\"colors\\"][\\"blue\\"][\\"800\\"]
+    },
+    color_gray: {
+      backgroundColor: theme[\\"colors\\"][\\"gray\\"]
+    }
+  }), [\\"theme\\"]);
+
+  const style = _rnStyledVariants__react.useMemo(() => {
+    const newStyle = [styleSheet.baseStyle, 
+            styleSheet[\`color_\${color}\`]
+        , isHovered ? styleSheet.baseStyle_hover : undefined, propStyle].filter(Boolean);
+    return newStyle;
+  }, [styleSheet, isHovered, color, propStyle]);
+
+  return <Pressable onHoverIn={onHoverIn} onHoverOut={onHoverOut} onPressIn={onPressInProp} onPressOut={onPressOutProp} onFocus={onFocusProp} onBlur={onBlurProp} ref={ref} style={style} {...props} />;
+});"
+`;
+
+exports[`test babel transform plugin verifies base pressed styles 1`] = `
+"import * as _rnStyledVariants__react from \\"react\\";
+import * as _rnStyledVariants_ from \\"react-native-styled-variants\\";
+
+const StyledPressable = _rnStyledVariants__react.forwardRef(({style: propStyle, onPressIn: onPressInProp, onPressOut: onPressOutProp, onHoverIn: onHoverInProp , onHoverOut: onHoverOutProp, onFocus: onFocusProp, onBlur: onBlurProp,  ...props}, ref) => {
+  _rnStyledVariants_.useTheme();
+  const {onPressIn, onPressOut, isPressed} = _rnStyledVariants_.usePress({onPressIn: onPressInProp, onPressOut: onPressOutProp});
+
+  const styleSheet = _rnStyledVariants_.useStyleSheet(4, ({
+    theme,
+    currentBreakpoint,
+    getClosestResponsiveValue
+  }) => ({
+    baseStyle_pressed: {
+      backgroundColor: theme[\\"colors\\"][\\"pressed\\"]
+    },
+    baseStyle: {
+      padding: theme[\\"space\\"][\\"3\\"],
+      backgroundColor: theme[\\"colors\\"][\\"primary\\"]
+    }
+  }), [\\"theme\\"]);
+
+  const style = _rnStyledVariants__react.useMemo(() => {
+    const newStyle = [styleSheet.baseStyle, isPressed ? styleSheet.baseStyle_pressed : undefined, propStyle].filter(Boolean);
+    return newStyle;
+  }, [styleSheet, isPressed, propStyle]);
+
+  return <Pressable onHoverIn={onHoverInProp} onHoverOut={onHoverOutProp} onPressIn={onPressIn} onPressOut={onPressOut} onFocus={onFocusProp} onBlur={onBlurProp} ref={ref} style={style} {...props} />;
+});"
+`;
+
+exports[`test babel transform plugin verifies base/variants pressed styles 1`] = `
+"import * as _rnStyledVariants__react from \\"react\\";
+import * as _rnStyledVariants_ from \\"react-native-styled-variants\\";
+
+const StyledPressable = _rnStyledVariants__react.forwardRef(({style: propStyle, onPressIn: onPressInProp, onPressOut: onPressOutProp, onHoverIn: onHoverInProp , onHoverOut: onHoverOutProp, onFocus: onFocusProp, onBlur: onBlurProp, checked, ...props}, ref) => {
+  _rnStyledVariants_.useTheme();
+  const {onPressIn, onPressOut, isPressed} = _rnStyledVariants_.usePress({onPressIn: onPressInProp, onPressOut: onPressOutProp});
+
+  const styleSheet = _rnStyledVariants_.useStyleSheet(5, ({
+    theme,
+    currentBreakpoint,
+    getClosestResponsiveValue
+  }) => ({
+    baseStyle_pressed: {
+      backgroundColor: theme[\\"colors\\"][\\"pressed\\"]
+    },
+    baseStyle: {
+      padding: theme[\\"space\\"][\\"3\\"],
+      backgroundColor: theme[\\"colors\\"][\\"primary\\"]
+    },
+    checked_true_pressed: {
+      backgroundColor: theme[\\"colors\\"][\\"pressed_checked\\"]
+    },
+    checked_true: {}
+  }), [\\"theme\\"]);
+
+  const style = _rnStyledVariants__react.useMemo(() => {
+    const newStyle = [styleSheet.baseStyle, 
+            styleSheet[\`checked_\${checked}\`]
+        , isPressed ? styleSheet.baseStyle_pressed : undefined, isPressed ? styleSheet[\`checked_\${checked}_pressed\`] : undefined, propStyle].filter(Boolean);
+    return newStyle;
+  }, [styleSheet, isPressed, checked, propStyle]);
+
+  return <Pressable onHoverIn={onHoverInProp} onHoverOut={onHoverOutProp} onPressIn={onPressIn} onPressOut={onPressOut} onFocus={onFocusProp} onBlur={onBlurProp} ref={ref} style={style} {...props} />;
+});"
+`;
