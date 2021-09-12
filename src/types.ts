@@ -6,7 +6,10 @@ interface AllStyles extends ViewStyle, TextStyle {
   _pressed?: ViewStyle | TextStyle;
   _focus?: ViewStyle | TextStyle;
 }
-export interface IStyles extends AllStyles {
+
+// Todo - improve TS support
+// @ts-ignore
+export interface IStyles<Theme, Breakpoints> extends AllStyles {
   variants?: {
     [key: string]: {
       [key: string]: AllStyles;
@@ -17,8 +20,10 @@ export interface IStyles extends AllStyles {
 export type IThemeProviderProps = {
   theme: any;
   currentBreakpoint?: any;
-  breakpoints: {
-    [key: string]: number;
-  };
+  breakpoints: IBreakpoints;
   children: ReactNode;
+};
+
+export type IBreakpoints = {
+  [key: string]: number;
 };

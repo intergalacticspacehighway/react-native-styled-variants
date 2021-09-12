@@ -2,6 +2,9 @@
   "compilerOptions": {
     "jsx": "react-native",
     "target": "esnext",
+    "paths": {
+      "react-native-styled-variants": ["../src/index"]
+    },
     "lib": [
       "esnext"
     ],

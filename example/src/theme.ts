@@ -295,7 +295,9 @@ const palettes = {
 };
 
 export const darkColors = {
-  cardBg: palettes.coolGray[700],
+  button_hover: palettes.indigo[600],
+  button_primary: palettes.indigo[500],
+  cardBg: palettes.coolGray[800],
   textColor: palettes.coolGray[50],
   borderColor: palettes.coolGray[50],
   shadowColor: palettes.coolGray[50],
@@ -307,6 +309,8 @@ export const darkColors = {
 };
 
 export const lightColors = {
+  button_hover: palettes.indigo[700],
+  button_primary: palettes.indigo[600],
   cardBg: palettes.coolGray[50],
   textColor: palettes.coolGray[900],
   borderColor: palettes.coolGray[900],

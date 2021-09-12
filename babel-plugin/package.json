@@ -1,6 +1,6 @@
 {
   "name": "babel-plugin-styled-variants",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "main": "index.js",
   "author": "nishan",
   "license": "MIT",

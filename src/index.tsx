@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { ReactNode, useCallback } from 'react';
 import { Dimensions, StyleSheet } from 'react-native';
 import type { IStyles, IThemeProviderProps } from './types';
 import {
@@ -10,7 +10,7 @@ import {
 // Todo: Improve typings!
 // type IStyleFn = ({}) => any;
 
-export const ThemeProvider = (props: IThemeProviderProps) => {
+const ThemeProviderImpl = (props: IThemeProviderProps) => {
   const [theme, _setTheme] = useControlledState(props.theme);
   const [breakpoints] = useControlledState(props.breakpoints);
 
@@ -167,8 +167,6 @@ export const useStyleSheet = (id: any, styleFn: any, dependsUpon: string[]) => {
   return style.generateStyleSheet(id, styleFn, dependsUpon);
 };
 
-export const styled = (_Component: any, _styles: IStyles) => ({} as any);
-
 const ThemeContext = React.createContext({
   theme: null,
   currentBreakpoint: null,
@@ -226,8 +224,32 @@ export const useFocus = ({ onFocus, onBlur }: any) => {
   };
 };
 
-export default {
-  multiply(a: number, b: number) {
-    return Promise.resolve(a * b);
-  },
-};
+export function createTheme<Theme, Breakpoints>({
+  theme,
+  breakpoints,
+}: {
+  theme: Theme;
+  breakpoints: Breakpoints;
+}) {
+  function ThemeProvider({ children }: { children: ReactNode }) {
+    return (
+      <ThemeProviderImpl
+        theme={theme}
+        // Todo - improve TS support
+        //@ts-ignore
+        breakpoints={breakpoints}
+        children={children}
+      />
+    );
+  }
+  // The below is a noOp function, it'll be removed by the transpiler
+  // Todo - improve TS support
+  function styled<Component>(
+    _Component: Component,
+    _styles: IStyles<Theme, Breakpoints>
+  ) {
+    return {} as any;
+  }
+
+  return { ThemeProvider, styled };
+}

@@ -1,12 +1,13 @@
-//@ts-nocheck
 import React, { useEffect, useState } from 'react';
 import { Text, Pressable, View } from 'react-native';
-import { useTheme, ThemeProvider, styled } from 'react-native-styled-variants';
+import { useTheme, createTheme } from 'react-native-styled-variants';
 import { breakpoints, theme, darkColors, lightColors } from './theme';
+
+const { styled, ThemeProvider } = createTheme({ theme, breakpoints });
 
 export default function App() {
   return (
-    <ThemeProvider breakpoints={breakpoints} theme={theme}>
+    <ThemeProvider>
       <AppContainer />
     </ThemeProvider>
   );
@@ -36,32 +37,48 @@ const AppContainer = () => {
 
   return (
     <Container>
-      <StyledPressable
-        checked={darkMode}
-        onPress={() => setDarkMode(!darkMode)}
-        onPressIn={() => console.log('hi')}
-      >
-        <StyledText>{darkMode ? 'dark mode' : 'light mode'}</StyledText>
-      </StyledPressable>
-      <StyledPressable2 checked onPressIn={() => console.log('hi')}>
-        <StyledText>{darkMode ? 'dark mode' : 'light mode'}</StyledText>
-      </StyledPressable2>
+      <Button size="large" onPress={() => setDarkMode(!darkMode)}>
+        <StyledText bold>
+          {darkMode ? 'Bring lightness' : 'Bring darkness'}
+        </StyledText>
+      </Button>
     </Container>
   );
 };
 
-const StyledPressable2 = styled(Pressable, {
-  padding: '$space.3',
-  backgroundColor: '$colors.primary',
+const StyledText = styled(Text, {
+  color: 'white',
+  variants: {
+    bold: {
+      true: {
+        fontWeight: '900',
+      },
+    },
+  },
+});
+
+const Button = styled(Pressable, {
+  backgroundColor: '$colors.button_primary',
+  justifyContent: 'center',
+  alignItems: 'center',
+  borderRadius: 4,
+  _hover: {
+    backgroundColor: '$colors.button_hover',
+  },
   _focus: {
-    backgroundColor: '$colors.cardBg',
+    backgroundColor: '$colors.indigo.600',
+  },
+  _pressed: {
+    backgroundColor: '$colors.pink.700',
   },
   variants: {
-    checked: {
-      true: {
-        _focus: {
-          backgroundColor: '$colors.pressed',
-        },
+    size: {
+      large: {
+        fontSize: 15,
+        //@ts-ignore - Improve responsive typings
+        height: { '@base': 35, '@sm': 50, '@md': 60, '@lg': 80, '@xl': 100 },
+        paddingLeft: 15,
+        paddingRight: 15,
       },
     },
   },
@@ -72,64 +89,4 @@ const Container = styled(View, {
   flex: 1,
   justifyContent: 'center',
   alignItems: 'center',
-});
-
-const StyledPressable = styled(Pressable, {
-  padding: '$space.8',
-  borderRadius: 8,
-  shadowColor: '$colors.shadowColor',
-  _pressed: {
-    backgroundColor: '$colors.pressed',
-  },
-  _hover: {
-    backgroundColor: '$colors.hover',
-  },
-  _focus: {
-    borderWidth: 10,
-    borderColor: 'pink',
-  },
-  shadowOffset: {
-    width: 0,
-    height: 2,
-  },
-  shadowOpacity: 0.25,
-  shadowRadius: 3.84,
-  elevation: 5,
-  backgroundColor: '$colors.cardBg',
-  variants: {
-    checked: {
-      true: {
-        backgroundColor: 'black',
-        _pressed: {
-          backgroundColor: 'pink',
-        },
-        _focus: {
-          backgroundColor: '$colors.blue.200',
-        },
-      },
-    },
-  },
-});
-
-const StyledText = styled(Text, {
-  padding: { '@base': 30, '@md': 90, '@xl': 5 },
-  borderWidth: 1,
-  borderColor: '$colors.borderColor',
-  color: '$colors.textColor',
-  variants: {
-    color: {
-      blue: {
-        color: 'white',
-      },
-      indigo: {
-        color: 'black',
-        padding: '$space.1',
-      },
-    },
-    size: {
-      md: {
-        padding: { '@md': 10 },
-      },
-    },
-  },
 });
