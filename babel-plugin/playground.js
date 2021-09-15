@@ -19,15 +19,33 @@ function transformToStyles(code) {
 transformToStyles(`
 
 const Button = styled(Pressable, {
-    backgroundColor: '$colors.primary',
-    padding: '$space.10',
-    variants: {
-      outlined: {
-        true: {
-          borderWidth: 4,
-        },
+  backgroundColor: '$colors.button_primary',
+  justifyContent: 'center',
+  alignItems: 'center',
+  borderRadius: 4,
+  _hover: {
+    backgroundColor: '$colors.button_hover',
+  },
+  _focus: {
+    backgroundColor: '$colors.indigo.600',
+  },
+  _pressed: {
+    backgroundColor: '$colors.pink.700',
+  },
+  variants: {
+    size: {
+      large: {
+        fontSize: 15,
+        //@ts-ignore - Improve responsive typings
+        height: { '@base': 35, '@sm': 50, '@md': 60, '@lg': 80, '@xl': 100 },
+        paddingLeft: 15,
+        paddingRight: 15,
       },
     },
-  });
+  },
+  defaultVariants: {
+    size: "large"
+  }
+});
   
 `);

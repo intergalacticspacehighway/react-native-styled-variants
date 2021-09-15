@@ -1,53 +1,77 @@
 import React, { useEffect, useState } from 'react';
 import { Text, Pressable, View } from 'react-native';
 import { useTheme, createTheme } from 'react-native-styled-variants';
+import { StyledComponentsButton } from './Benchmark';
 import { breakpoints, theme, darkColors, lightColors } from './theme';
+import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components/native';
 
-const { styled, ThemeProvider } = createTheme({ theme, breakpoints });
+const { styled: styledABCD, ThemeProvider } = createTheme({
+  theme,
+  breakpoints,
+});
 
 export default function App() {
   return (
-    <ThemeProvider>
-      <AppContainer />
-    </ThemeProvider>
+    <StyledComponentsThemeProvider theme={theme}>
+      <ThemeProvider>
+        <AppContainer />
+      </ThemeProvider>
+    </StyledComponentsThemeProvider>
   );
 }
 
 const AppContainer = () => {
   const [darkMode, setDarkMode] = useState(true);
-  const { setTheme } = useTheme();
-  useEffect(() => {
-    if (darkMode) {
-      setTheme({
-        ...theme,
-        colors: {
-          ...theme.colors,
-          ...darkColors,
-        },
-      });
-    } else {
-      setTheme({
-        ...theme,
-        colors: {
-          ...theme.colors,
-          ...lightColors,
-        },
-      });
-    }
-  }, [darkMode, setTheme]);
+  // useEffect(() => {
+  //   setInterval(() => {
+  //     setDarkMode((m) => !m);
+  //   }, 5000);
+  // }, []);
+  // useEffect(() => {
+  //   if (darkMode) {
+  //     setTheme({
+  //       ...theme,
+  //       colors: {
+  //         ...theme.colors,
+  //         ...darkColors,
+  //       },
+  //     });
+  //   } else {
+  //     setTheme({
+  //       ...theme,
+  //       colors: {
+  //         ...theme.colors,
+  //         ...lightColors,
+  //       },
+  //     });
+  //   }
+  // }, [darkMode, setTheme]);
 
   return (
     <Container>
-      <Button size="large" onPress={() => setDarkMode(!darkMode)}>
-        <StyledText bold>
-          {darkMode ? 'Bring lightness' : 'Bring darkness'}
-        </StyledText>
-      </Button>
+      <View>
+        {darkMode ? 'd' : 'k'}
+        <StyledComponentsButton />
+        <VariantButton />
+        {/* <VariantButton />
+        <VariantButton />
+        <VariantButton />
+        <VariantButton />
+        <VariantButton /> */}
+      </View>
     </Container>
   );
 };
 
-const StyledText = styled(Text, {
+const VariantButton = () => {
+  return (
+    <Button>
+      <StyledText bold>Bring lightness</StyledText>
+    </Button>
+  );
+};
+
+const StyledText = styledABCD(Text, {
   color: 'white',
   variants: {
     bold: {
@@ -58,34 +82,32 @@ const StyledText = styled(Text, {
   },
 });
 
-const Button = styled(Pressable, {
+const Button = styledABCD(Pressable, {
   backgroundColor: '$colors.button_primary',
   justifyContent: 'center',
   alignItems: 'center',
   borderRadius: 4,
+  fontSize: 15,
+  height: 35,
+  paddingLeft: 15,
+  paddingRight: 15,
   _hover: {
     backgroundColor: '$colors.button_hover',
   },
-  _focus: {
-    backgroundColor: '$colors.indigo.600',
-  },
   _pressed: {
-    backgroundColor: '$colors.pink.700',
+    backgroundColor: '$colors.pressed',
   },
   variants: {
     size: {
       large: {
-        fontSize: 15,
-        //@ts-ignore - Improve responsive typings
-        height: { '@base': 35, '@sm': 50, '@md': 60, '@lg': 80, '@xl': 100 },
-        paddingLeft: 15,
-        paddingRight: 15,
+        backgroundColor: 'black',
       },
     },
   },
+  defaultVariants: {},
 });
 
-const Container = styled(View, {
+const Container = styledABCD(View, {
   backgroundColor: '$colors.cardBg',
   flex: 1,
   justifyContent: 'center',

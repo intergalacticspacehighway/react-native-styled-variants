@@ -17,7 +17,7 @@ module.exports = function (api) {
           },
         },
       ],
-      'styled-variants',
+      path.join(__dirname, '..', 'babel-plugin', 'index.js'),
     ],
   };
 };

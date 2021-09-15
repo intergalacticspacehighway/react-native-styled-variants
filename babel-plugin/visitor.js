@@ -56,9 +56,15 @@ const visitor = {
         (prop) => prop.key.name === 'variants'
       );
 
+      // Default variants object
+      const defaultVariants = styleObjectExpression.properties.find(
+        (prop) => prop.key.name === 'defaultVariants'
+      );
+
       // Base style properties
       const baseStyleProperties = styleObjectExpression.properties
         .filter((prop) => prop.key.name !== 'variants')
+        .filter((p) => p.key.name !== 'defaultVariants')
         .filter((p) => p.key.name !== '_hover')
         .filter((p) => p.key.name !== '_focus')
         .filter((p) => p.key.name !== '_pressed');
@@ -365,6 +371,24 @@ const visitor = {
 
       const variantStyleMemoDeps = variantsIdentifier.join(', ');
 
+      let variantProps = '';
+      if (hasVariants) {
+        if (defaultVariants && defaultVariants.value.properties) {
+          variantProps =
+            variantsIdentifier
+              .map((v) => {
+                let value = defaultVariants.value.properties.find(
+                  (p) => p.key.name === v
+                ).value.value;
+                value = typeof value === 'string' ? `"${value}"` : value;
+                return `${v}=${value}`;
+              })
+              .join(', ') + ',';
+        } else {
+          variantProps = variantsIdentifier.join(', ') + ',';
+        }
+      }
+
       const substitutions = {
         KEY,
         HOVER_HOOK: '',
@@ -376,9 +400,7 @@ const visitor = {
         THEME_HOOK: '',
         STYLE_MEMO_DEPS: '',
         COMP: t.jSXIdentifier(componentIdentifier.name),
-        VARIANTS_PROPS: `{style: propStyle, onPressIn: onPressInProp, onPressOut: onPressOutProp, onHoverIn: onHoverInProp , onHoverOut: onHoverOutProp, onFocus: onFocusProp, onBlur: onBlurProp, ${
-          hasVariants ? variantsIdentifier.join(', ') + ',' : ''
-        } ...props}`,
+        VARIANTS_PROPS: `{style: propStyle, onPressIn: onPressInProp, onPressOut: onPressOutProp, onHoverIn: onHoverInProp , onHoverOut: onHoverOutProp, onFocus: onFocusProp, onBlur: onBlurProp, ${variantProps} ...props}`,
 
         STYLE_OBJECT: styleObjectExpression,
       };
