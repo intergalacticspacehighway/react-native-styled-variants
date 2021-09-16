@@ -23,7 +23,7 @@ const visitor = {
   },
   // Traverse for call expression beginning with `styled()`
   CallExpression(path) {
-    if (path.node.callee.name === 'styled') {
+    if (path.node.callee.name === 'createVariant') {
       if (!importsAdded) {
         // Adds import * as X from "package"
         packageNameSpace = addNamespace(root, source, {
@@ -373,7 +373,7 @@ const visitor = {
 
       let variantProps = '';
       if (hasVariants) {
-        if (defaultVariants && defaultVariants.value.properties) {
+        if (defaultVariants && t.isObjectExpression(defaultVariants.value)) {
           variantProps =
             variantsIdentifier
               .map((v) => {

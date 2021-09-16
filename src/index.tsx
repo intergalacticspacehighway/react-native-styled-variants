@@ -244,12 +244,12 @@ export function createTheme<Theme, Breakpoints>({
   }
   // The below is a noOp function, it'll be removed by the transpiler
   // Todo - improve TS support
-  function styled<Component>(
+  function createVariant<Component, DefinedStyles>(
     _Component: Component,
-    _styles: IStyles<Theme, Breakpoints>
+    _styles: DefinedStyles & IStyles<Theme, Breakpoints, DefinedStyles>
   ) {
     return {} as any;
   }
 
-  return { ThemeProvider, styled };
+  return { ThemeProvider, createVariant };
 }

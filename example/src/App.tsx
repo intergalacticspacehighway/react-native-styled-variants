@@ -5,7 +5,7 @@ import { StyledComponentsButton } from './Benchmark';
 import { breakpoints, theme, darkColors, lightColors } from './theme';
 import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components/native';
 
-const { styled: styledABCD, ThemeProvider } = createTheme({
+const { createVariant, ThemeProvider } = createTheme({
   theme,
   breakpoints,
 });
@@ -71,7 +71,7 @@ const VariantButton = () => {
   );
 };
 
-const StyledText = styledABCD(Text, {
+const StyledText = createVariant(Text, {
   color: 'white',
   variants: {
     bold: {
@@ -82,32 +82,34 @@ const StyledText = styledABCD(Text, {
   },
 });
 
-const Button = styledABCD(Pressable, {
+const Button = createVariant(Pressable, {
   backgroundColor: '$colors.button_primary',
   justifyContent: 'center',
   alignItems: 'center',
   borderRadius: 4,
   fontSize: 15,
-  height: 35,
-  paddingLeft: 15,
-  paddingRight: 15,
-  _hover: {
-    backgroundColor: '$colors.button_hover',
+  height: {
+    '@sm': '$space.30',
   },
   _pressed: {
-    backgroundColor: '$colors.pressed',
+    backgroundColor: {
+      '@sm': 'black',
+    },
   },
   variants: {
     size: {
       large: {
         backgroundColor: 'black',
       },
+      small: {
+        height: 35,
+      },
     },
   },
-  defaultVariants: {},
+  defaultVariants: { size: 'small' },
 });
 
-const Container = styledABCD(View, {
+const Container = createVariant(View, {
   backgroundColor: '$colors.cardBg',
   flex: 1,
   justifyContent: 'center',
