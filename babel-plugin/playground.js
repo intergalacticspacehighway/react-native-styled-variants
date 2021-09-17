@@ -2,6 +2,7 @@ const { parse } = require('@babel/parser');
 const traverse = require('@babel/traverse').default;
 const generate = require('@babel/generator').default;
 const visitor = require('./visitor');
+const utilityPropVisitor = require('./utility-prop-visitor');
 
 function transformToStyles(code) {
   const ast = parse(code, {
@@ -9,7 +10,14 @@ function transformToStyles(code) {
     plugins: ['jsx', 'typescript'],
   });
 
-  traverse(ast, visitor);
+  traverse(ast, {
+    ...visitor,
+    ...utilityPropVisitor,
+    Program(path) {
+      visitor.Program(path);
+      utilityPropVisitor.Program(path);
+    },
+  });
 
   // generate code <- ast
   const output = generate(ast, code);
@@ -18,34 +26,62 @@ function transformToStyles(code) {
 
 transformToStyles(`
 
-const Button = styled(Pressable, {
-  backgroundColor: '$colors.button_primary',
-  justifyContent: 'center',
-  alignItems: 'center',
-  borderRadius: 4,
-  _hover: {
-    backgroundColor: '$colors.button_hover',
-  },
-  _focus: {
-    backgroundColor: '$colors.indigo.600',
-  },
-  _pressed: {
-    backgroundColor: '$colors.pink.700',
-  },
-  variants: {
-    size: {
-      large: {
-        fontSize: 15,
-        //@ts-ignore - Improve responsive typings
-        height: { '@base': 35, '@sm': 50, '@md': 60, '@lg': 80, '@xl': 100 },
-        paddingLeft: 15,
-        paddingRight: 15,
-      },
-    },
-  },
-  defaultVariants: {
-    size: "large"
-  }
-});
-  
+function AppContainer() {
+  const [darkMode, setDarkMode] = useState(true);
+  // useEffect(() => {
+  //   setInterval(() => {
+  //     setDarkMode((m) => !m);
+  //   }, 5000);
+  // }, []);
+  // useEffect(() => {
+  //   if (darkMode) {
+  //     setTheme({
+  //       ...theme,
+  //       colors: {
+  //         ...theme.colors,
+  //         ...darkColors,
+  //       },
+  //     });
+  //   } else {
+  //     setTheme({
+  //       ...theme,
+  //       colors: {
+  //         ...theme.colors,
+  //         ...lightColors,
+  //       },
+  //     });
+  //   }
+  // }, [darkMode, setTheme]);
+  const x = 1;
+  return (
+    <Container>
+      <ScrollView
+        sx={{
+          backgroundColor: '$colors.rose.200',
+          flex: x,
+          alignItems: {"@sm":'center'},
+        }}
+        style={{flexDirection: "row"}}
+      >
+        <Text>Hello from scrollview</Text>
+      </ScrollView>
+      <View
+        sx={{
+          backgroundColor: '$colors.rose.50',
+          flex: 1,
+          alignItems: 'center',
+        }}
+        nativeID="122"
+      >
+        <StyledComponentsButton />
+        <VariantButton />
+        {/* <VariantButton />
+        <VariantButton />
+        <VariantButton />
+        <VariantButton />
+        <VariantButton /> */}
+      </View>
+    </Container>
+  );
+}
 `);

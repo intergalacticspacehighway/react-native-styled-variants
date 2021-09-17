@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Text, Pressable, View } from 'react-native';
+import { Text, Pressable, View, ScrollView } from 'react-native';
 import { useTheme, createTheme } from 'react-native-styled-variants';
 import { StyledComponentsButton } from './Benchmark';
 import { breakpoints, theme, darkColors, lightColors } from './theme';
@@ -20,7 +20,7 @@ export default function App() {
   );
 }
 
-const AppContainer = () => {
+function AppContainer() {
   const [darkMode, setDarkMode] = useState(true);
   // useEffect(() => {
   //   setInterval(() => {
@@ -47,10 +47,22 @@ const AppContainer = () => {
   //   }
   // }, [darkMode, setTheme]);
 
+  const x = 1;
   return (
     <Container>
-      <View>
-        {darkMode ? 'd' : 'k'}
+      <ScrollView>
+        <Text>Hello from scrollview</Text>
+      </ScrollView>
+      <View
+        sx={{
+          backgroundColor: '$colors.rose.50',
+          flex: 1,
+          alignItems: 'center',
+          borderWidth: 4,
+        }}
+        style={{ borderWidth: 10 }}
+        nativeID="122"
+      >
         <StyledComponentsButton />
         <VariantButton />
         {/* <VariantButton />
@@ -61,7 +73,7 @@ const AppContainer = () => {
       </View>
     </Container>
   );
-};
+}
 
 const VariantButton = () => {
   return (
