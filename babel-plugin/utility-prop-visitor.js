@@ -24,11 +24,11 @@ const attrMaps = {
 };
 
 let visitor = {
-  Program(path) {
+  'Program'(path) {
     root = path;
     importsAdded = false;
   },
-  FunctionDeclaration(path) {
+  'FunctionDeclaration|ArrowFunctionExpression'(path) {
     // Put check if starts with capital name to make sure it's a react component!
 
     let count = 0;
@@ -57,19 +57,21 @@ let visitor = {
         // If sx or contentContainerSX includes variables, we'll not memoize it for now!
         let containsVariables = false;
 
-        const sxAttributes = jsxPath
+        const jsxAttributes = jsxPath
           .get('attributes')
-          .filter(
-            (attr) =>
-              attr.node.name.name === 'sx' ||
-              attr.node.name.name === 'contentContainerSX'
-          );
+          .filter((attr) => t.isJSXAttribute(attr.node));
+
+        const sxAttributes = jsxAttributes.filter(
+          (attr) =>
+            attr.node.name.name === 'sx' ||
+            attr.node.name.name === 'contentContainerSX'
+        );
 
         sxAttributes.forEach((sxAttribute) => {
           const styleAttributeName = attrMaps[sxAttribute.node.name.name];
-          const styleAttribute = jsxPath
-            .get('attributes')
-            .filter((attr) => attr.node.name.name === styleAttributeName)[0];
+          const styleAttribute = jsxAttributes.filter(
+            (attr) => attr.node.name.name === styleAttributeName
+          )[0];
 
           if (sxAttribute) {
             foundSXAttribute = true;
@@ -194,6 +196,13 @@ let visitor = {
                 styleAttribute.node.value.expression.elements.unshift(
                   newStyleValue
                 );
+              }
+              // Case 4 - style is a identifier style={style} => style={[styleSheet['1'], style]}
+              else if (t.isIdentifier(styleAttribute.node.value.expression)) {
+                styleAttribute.node.value.expression = t.arrayExpression([
+                  newStyleValue,
+                  styleAttribute.node.value.expression,
+                ]);
               }
             }
           }

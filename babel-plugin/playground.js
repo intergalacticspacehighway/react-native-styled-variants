@@ -25,66 +25,11 @@ function transformToStyles(code) {
 }
 
 transformToStyles(`
-
-function AppContainer() {
-  const [darkMode, setDarkMode] = useState(true);
-  // useEffect(() => {
-  //   setInterval(() => {
-  //     setDarkMode((m) => !m);
-  //   }, 5000);
-  // }, []);
-  // useEffect(() => {
-  //   if (darkMode) {
-  //     setTheme({
-  //       ...theme,
-  //       colors: {
-  //         ...theme.colors,
-  //         ...darkColors,
-  //       },
-  //     });
-  //   } else {
-  //     setTheme({
-  //       ...theme,
-  //       colors: {
-  //         ...theme.colors,
-  //         ...lightColors,
-  //       },
-  //     });
-  //   }
-  // }, [darkMode, setTheme]);
-  const x = 1;
+const SXY = ({ style }) => {
   return (
-    <Container>
-      <ScrollView
-        sx={{
-          backgroundColor: '$colors.rose.200',
-          flex: x,
-          alignItems: {"@sm":'center'},
-        }}
-        style={{flexDirection: "row"}}
-      >
-        <Text>Hello from scrollview</Text>
-      </ScrollView>
-      <View
-        sx={{
-          backgroundColor: {
-            '@sm': '$colors.rose.50',
-            '@lg': '$colors.rose.900',
-          },
-          flex: 1,
-          alignItems: 'center',
-        }}
-        nativeID="122"
-      >
-        <StyledComponentsButton />
-        <VariantButton />
-        {/* <VariantButton />
-        <VariantButton />
-        <VariantButton />
-        <VariantButton />
-        <VariantButton /> */}
-      </View>
-    </Container>
+    <Button sx={{ backgroundColor: 'yellow' }} style={[style]}>
+      <StyledText bold>ABCD</StyledText>
+    </Button>
   );
-}
+};
 `);
