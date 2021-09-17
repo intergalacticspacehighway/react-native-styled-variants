@@ -42,6 +42,11 @@ let visitor = {
     let themeIdentifier = path.scope.generateUidIdentifier('theme');
     let breakPointIdentifier =
       path.scope.generateUidIdentifier('currentBreakpoint');
+    const resolveResponsiveValueMemberExpression = t.memberExpression(
+      breakPointIdentifier,
+      t.identifier('resolveResponsiveValue')
+    );
+
     let foundSXAttribute = false;
     let styleSheetIdentifier = path.scope.generateUidIdentifier('styleSheet');
 
@@ -111,7 +116,7 @@ let visitor = {
                       }
                     }
 
-                    // Converts {"@sm": 20, "@base": 10} => getClosestBreakpointValue({sm: 20, base: 10}, currentBreakpoint);
+                    // Converts {"@sm": 20, "@base": 10} => resolveResponsiveValue({sm: 20, base: 10});
                     else if (t.isObjectExpression(path.node.value)) {
                       const objectExpressionNode = path.node.value;
 
@@ -132,8 +137,8 @@ let visitor = {
                         );
 
                         path.node.value = t.callExpression(
-                          t.identifier('getClosestResponsiveValue'),
-                          [objectExpressionNode, breakPointIdentifier]
+                          resolveResponsiveValueMemberExpression,
+                          [objectExpressionNode]
                         );
                       }
                     }
@@ -217,7 +222,7 @@ let visitor = {
         memoArray.push(themeIdentifier);
       }
       if (hasResponsiveStyles) {
-        memoArray.push(breakPointIdentifier);
+        memoArray.push(resolveResponsiveValueMemberExpression);
       }
       const styleSheetMemoized = t.callExpression(
         t.memberExpression(

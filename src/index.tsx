@@ -14,7 +14,7 @@ const ThemeProviderImpl = (props: IThemeProviderProps) => {
   const [theme, _setTheme] = useControlledState(props.theme);
   const [breakpoints] = useControlledState(props.breakpoints);
 
-  const breakpointsArray = React.useMemo(() => {
+  const breakpointsSortedKeys = React.useMemo(() => {
     return Object.entries(breakpoints)
       .sort(([, a], [, b]) => a - b)
       .map((v) => v[0]);
@@ -24,7 +24,7 @@ const ThemeProviderImpl = (props: IThemeProviderProps) => {
     props.currentBreakpoint ??
       getCurrentBreakpoint(
         Dimensions.get('window').width,
-        breakpointsArray,
+        breakpointsSortedKeys,
         breakpoints
       )
   );
@@ -49,7 +49,7 @@ const ThemeProviderImpl = (props: IThemeProviderProps) => {
             getClosestResponsiveValue(
               values,
               currentBreakpoint,
-              breakpointsArray
+              breakpointsSortedKeys
             ),
         })
       );
@@ -77,7 +77,7 @@ const ThemeProviderImpl = (props: IThemeProviderProps) => {
               getClosestResponsiveValue(
                 values,
                 currentBreakpoint,
-                breakpointsArray
+                breakpointsSortedKeys
               ),
           })
         );
@@ -86,7 +86,7 @@ const ThemeProviderImpl = (props: IThemeProviderProps) => {
     },
     [
       _setTheme,
-      breakpointsArray,
+      breakpointsSortedKeys,
       currentBreakpoint,
       styleSheets,
       themeDependentStyleSheetIds,
@@ -105,7 +105,7 @@ const ThemeProviderImpl = (props: IThemeProviderProps) => {
               getClosestResponsiveValue(
                 values,
                 newBreakpoint,
-                breakpointsArray
+                breakpointsSortedKeys
               ),
           })
         );
@@ -115,18 +115,26 @@ const ThemeProviderImpl = (props: IThemeProviderProps) => {
     [
       _setCurrentBreakpoint,
       breakpointDependentStyleSheetIds,
-      breakpointsArray,
+      breakpointsSortedKeys,
       styleSheets,
       theme,
     ]
   );
+
+  const resolveResponsiveValue = (values: any) => {
+    return getClosestResponsiveValue(
+      values,
+      currentBreakpoint,
+      breakpointsSortedKeys
+    );
+  };
 
   React.useEffect(() => {
     function updateCurrentBreakpoint(dimensions: any) {
       setCurrentBreakpoint(
         getCurrentBreakpoint(
           dimensions.window.width,
-          breakpointsArray,
+          breakpointsSortedKeys,
           breakpoints
         )
       );
@@ -135,7 +143,7 @@ const ThemeProviderImpl = (props: IThemeProviderProps) => {
     return () => {
       Dimensions.removeEventListener('change', updateCurrentBreakpoint);
     };
-  }, [setCurrentBreakpoint, breakpointsArray, breakpoints]);
+  }, [setCurrentBreakpoint, breakpointsSortedKeys, breakpoints]);
 
   return (
     <ThemeContext.Provider
@@ -147,6 +155,7 @@ const ThemeProviderImpl = (props: IThemeProviderProps) => {
         currentBreakpoint,
         generateStyleSheet,
         breakpoints,
+        resolveResponsiveValue,
       }}
     />
   );
@@ -159,7 +168,10 @@ export const useTheme = () => {
 
 export const useCurrentBreakpoint = () => {
   const style = React.useContext(ThemeContext);
-  return style.currentBreakpoint;
+  return {
+    currentBreakpoint: style.currentBreakpoint,
+    resolveResponsiveValue: style.resolveResponsiveValue,
+  };
 };
 
 export const useStyleSheet = (id: any, styleFn: any, dependsUpon: string[]) => {
@@ -174,6 +186,7 @@ const ThemeContext = React.createContext({
   setCurrentBreakpoint: (_currentBreakpoint: any) => {},
   generateStyleSheet: (_id: any, _styleFn: any, _dependsUpon: any) => {},
   breakpoints: {},
+  resolveResponsiveValue: (_values: any) => {},
 });
 
 export const useHover = ({ onHoverIn, onHoverOut }: any) => {

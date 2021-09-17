@@ -56,7 +56,7 @@ function AppContainer() {
       <View
         sx={{
           backgroundColor: '$colors.rose.50',
-          flex: 1,
+          flex: x,
           alignItems: 'center',
           borderWidth: 4,
         }}
