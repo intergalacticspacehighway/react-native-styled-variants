@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Text, Pressable, View, ScrollView } from 'react-native';
-import { useTheme, createTheme } from 'react-native-styled-variants';
+import {
+  useTheme,
+  createTheme,
+  useCurrentBreakpoint,
+} from 'react-native-styled-variants';
 import { StyledComponentsButton } from './Benchmark';
 import { breakpoints, theme, darkColors, lightColors } from './theme';
 import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components/native';
@@ -22,6 +26,14 @@ export default function App() {
 
 function AppContainer() {
   const [darkMode, setDarkMode] = useState(true);
+  const a = useCurrentBreakpoint();
+  console.log(
+    'effe ',
+    a.resolveResponsiveValue({
+      sm: '$colors.rose.50',
+      lg: '$colors.rose.900',
+    })
+  );
   // useEffect(() => {
   //   setInterval(() => {
   //     setDarkMode((m) => !m);
@@ -55,7 +67,10 @@ function AppContainer() {
       </ScrollView>
       <View
         sx={{
-          backgroundColor: '$colors.rose.50',
+          backgroundColor: {
+            '@sm': '$colors.rose.50',
+            '@lg': '$colors.rose.800',
+          },
           flex: x,
           alignItems: 'center',
           borderWidth: 4,
@@ -101,7 +116,7 @@ const Button = createVariant(Pressable, {
   borderRadius: 4,
   fontSize: 15,
   height: {
-    '@sm': '$space.30',
+    '@sm': '$space.8',
   },
   _pressed: {
     backgroundColor: {

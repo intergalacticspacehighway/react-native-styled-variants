@@ -67,7 +67,10 @@ function AppContainer() {
       </ScrollView>
       <View
         sx={{
-          backgroundColor: '$colors.rose.50',
+          backgroundColor: {
+            '@sm': '$colors.rose.50',
+            '@lg': '$colors.rose.900',
+          },
           flex: 1,
           alignItems: 'center',
         }}
