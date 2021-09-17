@@ -3,7 +3,7 @@ import { Pressable, Text } from 'react-native';
 import { useHover, usePress } from 'react-native-styled-variants';
 import xyz from 'styled-components/native';
 
-export const StyledComponentsButton = () => {
+export const StyledComponentsButton = ({ onPress }) => {
   const { onHoverIn, onHoverOut, isHovered } = useHover({});
   const { onPressOut, onPressIn, isPressed } = usePress({});
   return (
@@ -14,6 +14,7 @@ export const StyledComponentsButton = () => {
       isPressed={isPressed}
       onPressIn={onPressIn}
       onPressOut={onPressOut}
+      onPress={onPress}
     >
       <StyledText bold>Bring lightness</StyledText>
     </Button>

@@ -10,15 +10,17 @@ type ThemedIAllStyles<Theme> = keyof {
   [Key in keyof Theme as Prefixed<Key, Theme>]: true;
 };
 
-type ExtendStyles<Theme, Breakpoints> = {
-  [Name in keyof IAllStyles]?:
-    | ThemedIAllStyles<Theme>
-    | {
-        [Point in keyof Breakpoints as Point extends string
-          ? `@${Point}`
-          : Point]?: ThemedIAllStyles<Theme> | IAllStyles[Name];
-      };
-};
+// type ExtendStyles<Theme, Breakpoints> = {
+//   [Name in keyof IAllStyles]?:
+//     | ThemedIAllStyles<Theme>
+//     | {
+//         [Point in keyof Breakpoints as Point extends string
+//           ? `@${Point}`
+//           : Point]?: ThemedIAllStyles<Theme> | IAllStyles[Name];
+//       };
+// };
+
+type ExtendStyles<Theme, Breakpoints> = ViewStyle & TextStyle;
 
 interface AllStyles<Theme, Breakpoints>
   extends ExtendStyles<Theme, Breakpoints> {

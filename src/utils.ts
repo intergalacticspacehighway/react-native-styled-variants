@@ -33,7 +33,10 @@ export const getCurrentBreakpoint = (
   breakpointsSortedKeys,
   breakpoints
 ) => {
-  const breakpoint = getClosestBreakpoint(breakpoints, windowWidth);
+  const breakpoint = getClosestBreakpoint(
+    breakpointsSortedKeys.map((key) => breakpoints[key]),
+    windowWidth
+  );
   return breakpointsSortedKeys[breakpoint];
 };
 

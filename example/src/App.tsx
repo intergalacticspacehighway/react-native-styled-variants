@@ -25,41 +25,6 @@ export default function App() {
 }
 
 function AppContainer() {
-  const [darkMode, setDarkMode] = useState(true);
-  const a = useCurrentBreakpoint();
-  console.log(
-    'effe ',
-    a.resolveResponsiveValue({
-      sm: '$colors.rose.50',
-      lg: '$colors.rose.900',
-    })
-  );
-  // useEffect(() => {
-  //   setInterval(() => {
-  //     setDarkMode((m) => !m);
-  //   }, 5000);
-  // }, []);
-  // useEffect(() => {
-  //   if (darkMode) {
-  //     setTheme({
-  //       ...theme,
-  //       colors: {
-  //         ...theme.colors,
-  //         ...darkColors,
-  //       },
-  //     });
-  //   } else {
-  //     setTheme({
-  //       ...theme,
-  //       colors: {
-  //         ...theme.colors,
-  //         ...lightColors,
-  //       },
-  //     });
-  //   }
-  // }, [darkMode, setTheme]);
-
-  const x = 1;
   return (
     <Container>
       <ScrollView>
@@ -71,7 +36,6 @@ function AppContainer() {
             '@sm': '$colors.rose.50',
             '@lg': '$colors.rose.800',
           },
-          flex: x,
           alignItems: 'center',
           borderWidth: 4,
         }}
@@ -115,21 +79,18 @@ const Button = createVariant(Pressable, {
   alignItems: 'center',
   borderRadius: 4,
   fontSize: 15,
-  height: {
-    '@sm': '$space.8',
-  },
+  paddingHorizontal: 15,
+  height: 35,
   _pressed: {
-    backgroundColor: {
-      '@sm': 'black',
-    },
+    backgroundColor: '$colors.pressed',
+  },
+  _hover: {
+    backgroundColor: '$colors.button_hover',
   },
   variants: {
     size: {
-      large: {
-        backgroundColor: 'black',
-      },
       small: {
-        height: 35,
+        backgroundColor: 'black',
       },
     },
   },
