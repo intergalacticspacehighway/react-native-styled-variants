@@ -309,6 +309,8 @@ export const darkColors = {
 };
 
 export const lightColors = {
+  primary: palettes.amber[500],
+
   button_hover: palettes.indigo[700],
   button_primary: palettes.indigo[600],
   cardBg: palettes.coolGray[50],
@@ -318,7 +320,6 @@ export const lightColors = {
   hover: palettes.blue[100],
   pressed: palettes.blue[200],
   pressed_secondary: palettes.blue[400],
-  primary: palettes.blue[600],
 };
 
 export const theme = {
