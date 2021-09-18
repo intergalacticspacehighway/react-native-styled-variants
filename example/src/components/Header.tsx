@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Image, Platform, Pressable } from 'react-native';
+import { View, Image } from 'react-native';
 import { createVariant } from '../AnimeApp/theme';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -22,10 +22,11 @@ export const Header = () => {
         backgroundColor: '$colors.white',
         padding: '$space.3',
         flexDirection: 'row',
+        flex: 1,
         alignItems: 'center',
         justifyContent: { '@base': 'center', '@sm': 'space-around' },
       }}
-      style={{ paddingTop: Platform.select({ ios: insets.top }) }}
+      style={{ paddingTop: insets.top }}
     >
       <View
         sx={{
