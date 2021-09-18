@@ -4,6 +4,7 @@ import { Header } from '../components/Header';
 import { createVariant, ThemeProvider } from './theme';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Animated } from 'react-native';
+
 function getRandomInt(max) {
   return Math.floor(Math.random() * max);
 }

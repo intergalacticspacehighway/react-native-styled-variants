@@ -13,8 +13,11 @@ type IBreakpoints = {
 type ExtendStyleWithBreakpointValues<Style, Breakpoints> = {
   [Key in keyof Style]?:
     | Style[Key]
+    | string // Here we need theme tokens instead of string.
     | {
-        [Breakpoint in keyof Breakpoints as `@${Breakpoint}`]?: Style[Key];
+        [Breakpoint in keyof Breakpoints as `@${Breakpoint}`]?:
+          | Style[Key]
+          | string; // Here we need theme tokens instead of string.
       };
 };
 
