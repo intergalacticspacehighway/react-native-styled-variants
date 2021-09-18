@@ -1,4 +1,3 @@
-//@ts-nocheck
 import React, { useEffect, useRef } from 'react';
 import { Pressable, Text, View, Platform } from 'react-native';
 import { Header } from '../components/Header';
@@ -132,7 +131,7 @@ const Button = createVariant(Pressable, {
   paddingHorizontal: '$space.5',
   paddingVertical: '$space.4',
   borderColor: '$colors.red.2',
-  width: Platform.select({ web: 250, default: '80%' }),
+  width: Platform.select({ web: 250, default: '80%' as any }),
   alignItems: 'center',
   _hover: {
     backgroundColor: '$colors.red.0',

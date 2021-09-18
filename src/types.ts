@@ -1,37 +1,56 @@
 import type { ReactNode } from 'react';
-import type { TextStyle, ViewStyle } from 'react-native';
-type IAllStyles = ViewStyle & TextStyle;
-export type Prefixed<K extends string, T> = `${K}${Extract<
-  T,
-  boolean | number | string
->}`;
+import type { ImageStyle, TextStyle, ViewStyle } from 'react-native';
 
-type ThemedIAllStyles<Theme> = keyof {
-  [Key in keyof Theme as Prefixed<Key, Theme>]: true;
+type IStyle = {
+  [key: string]: any;
+  varians?: {
+    [key: string]: any;
+  };
+  defaultVariants?: {
+    [key: string]: any;
+  };
 };
 
-// type ExtendStyles<Theme, Breakpoints> = {
-//   [Name in keyof IAllStyles]?:
-//     | ThemedIAllStyles<Theme>
-//     | {
-//         [Point in keyof Breakpoints as Point extends string
-//           ? `@${Point}`
-//           : Point]?: ThemedIAllStyles<Theme> | IAllStyles[Name];
-//       };
-// };
+export type GetVariantProps<Style extends IStyle> = {
+  [Key in keyof Style['variants']]?: keyof Style['variants'][Key] extends
+    | 'true'
+    | 'false'
+    ? boolean
+    : keyof Style['variants'][Key];
+};
 
-type ExtendStyles<Theme, Breakpoints> = ViewStyle & TextStyle;
+type IBreakpoints = {
+  'base'?: number;
+  'sm'?: number;
+  'md'?: number;
+  'lg'?: number;
+  'xl'?: number;
+  '2xl'?: number;
+};
 
-interface AllStyles<Theme, Breakpoints>
-  extends ExtendStyles<Theme, Breakpoints> {
-  _hover?: AllStyles<Theme, Breakpoints>;
-  _pressed?: AllStyles<Theme, Breakpoints>;
-  _focus?: AllStyles<Theme, Breakpoints>;
+type ExtendStyleWithBreakpointValues<Style, Breakpoints> = {
+  [Key in keyof Style]?:
+    | Style[Key]
+    | string // Here we need theme tokens instead of string.
+    | {
+        [Breakpoint in keyof Breakpoints as `@${Breakpoint}`]?:
+          | Style[Key]
+          | string; // Here we need theme tokens instead of string.
+      };
+};
+
+type RNStyles<Theme, BreakPoints> = ExtendStyleWithBreakpointValues<
+  TextStyle & ImageStyle & ViewStyle,
+  BreakPoints
+>;
+
+interface AllStyles<Theme, Breakpoints> extends RNStyles<Theme, Breakpoints> {
+  _hover?: RNStyles<Theme, Breakpoints>;
+  _pressed?: RNStyles<Theme, Breakpoints>;
+  _focus?: RNStyles<Theme, Breakpoints>;
 }
 
-// Todo - improve TS support
-// @ts-ignore
-export interface IStyles<Theme, Breakpoints, DefinedStyles>
+export interface IStyles<Theme, Breakpoints, DefinedStyles extends IStyle>
   extends AllStyles<Theme, Breakpoints> {
   variants?: {
     [key: string | number]: {
@@ -39,9 +58,7 @@ export interface IStyles<Theme, Breakpoints, DefinedStyles>
     };
   };
   defaultVariants?: 'variants' extends keyof DefinedStyles
-    ? {
-        [Name in keyof DefinedStyles['variants']]?: keyof DefinedStyles['variants'][Name];
-      }
+    ? GetVariantProps<DefinedStyles>
     : undefined;
 }
 
@@ -50,8 +67,4 @@ export type IThemeProviderProps = {
   currentBreakpoint?: any;
   breakpoints: IBreakpoints;
   children: ReactNode;
-};
-
-export type IBreakpoints = {
-  [key: string]: number;
 };

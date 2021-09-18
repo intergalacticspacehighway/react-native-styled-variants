@@ -1,14 +1,11 @@
 import React, { ReactNode, useCallback } from 'react';
 import { Dimensions, StyleSheet } from 'react-native';
-import type { IStyles, IThemeProviderProps } from './types';
+import type { GetVariantProps, IStyles, IThemeProviderProps } from './types';
 import {
   useControlledState,
   getCurrentBreakpoint,
   getClosestResponsiveValue,
 } from './utils';
-
-// Todo: Improve typings!
-// type IStyleFn = ({}) => any;
 
 const ThemeProviderImpl = (props: IThemeProviderProps) => {
   const [theme, _setTheme] = useControlledState(props.theme);
@@ -261,7 +258,9 @@ export function createTheme<Theme, Breakpoints>({
     _Component: Component,
     _styles: DefinedStyles & IStyles<Theme, Breakpoints, DefinedStyles>
   ) {
-    return {} as any;
+    return {} as React.FC<
+      GetVariantProps<DefinedStyles> & React.ComponentProps<Component>
+    >;
   }
 
   return { ThemeProvider, createVariant };
