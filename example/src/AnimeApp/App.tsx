@@ -1,5 +1,13 @@
-import React from 'react';
-import { Pressable, Text, View, Image, Dimensions } from 'react-native';
+import React, { useEffect } from 'react';
+import {
+  Pressable,
+  Text,
+  View,
+  Image,
+  Dimensions,
+  ScrollView,
+  Platform,
+} from 'react-native';
 import { Header } from '../components/Header';
 import { createVariant, ThemeProvider } from './theme';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -7,7 +15,7 @@ function getRandomInt(max) {
   return Math.floor(Math.random() * max);
 }
 
-const { height } = Dimensions.get('window');
+const { height, width } = Dimensions.get('window');
 const avatarImages = {
   sad: 'https://images2.fanpop.com/image/photos/13300000/Depressed-zuko-13308184-640-480.jpg',
   happy:
@@ -24,12 +32,22 @@ const avatarImages = {
 const mood = Object.keys(avatarImages);
 
 export default () => {
+  useEffect(() => {
+    if (Platform.OS === 'web') {
+      document.body.style.overflowY = 'hidden';
+      document.body.style.overflow = 'hidden';
+      document.body.style.height = '100%';
+    }
+  }, []);
+
   return (
     <SafeAreaProvider>
       <ThemeProvider>
         <Container>
-          <Header />
-          <Screen />
+          <ScrollView stickyHeaderIndices={[0]}>
+            <Header />
+            <Screen />
+          </ScrollView>
         </Container>
       </ThemeProvider>
     </SafeAreaProvider>
@@ -60,7 +78,7 @@ const Screen = () => {
         key={avatarImages[mood[imageIndex]]}
       />
       <View sx={{ alignItems: 'center', marginTop: 50 }}>
-        <Button onPress={changeImage}>
+        <Button onPress={changeImage} accessibilityRole="button">
           <StyledText uppercase bold>
             {mood[imageIndex]}
           </StyledText>
@@ -79,14 +97,14 @@ const Button = createVariant(Pressable, {
   borderRadius: 4,
   paddingHorizontal: '$space.5',
   paddingVertical: '$space.4',
-  borderColor: '$colors.blue.1',
-  width: 150,
+  borderColor: '$colors.red.2',
+  width: Platform.select({ web: 250, ios: width - 100 }),
   alignItems: 'center',
-  _pressed: {
-    backgroundColor: '$colors.blue.2',
-  },
   _hover: {
-    backgroundColor: '$colors.blue.3',
+    backgroundColor: '$colors.red.0',
+  },
+  _pressed: {
+    backgroundColor: '$colors.red.1',
   },
 });
 

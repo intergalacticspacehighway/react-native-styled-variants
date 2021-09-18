@@ -23,13 +23,14 @@ export const Header = () => {
         padding: '$space.3',
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: { '@base': 'center', '@sm': 'space-around' },
       }}
       style={{ paddingTop: Platform.select({ ios: insets.top }) }}
     >
       <View
         sx={{
+          borderRadius: 50,
           shadowColor: '#000',
-          padding: '$space.2',
           ...shadow,
         }}
       >
@@ -37,14 +38,21 @@ export const Header = () => {
           source={{
             uri: 'https://cdn.vox-cdn.com/thumbor/zFJuBWv5NjSeVilWJntvQcgji5M=/1400x1400/filters:format(jpeg)/cdn.vox-cdn.com/uploads/chorus_asset/file/19979927/jomi_avatar_nickleodeon_ringer.jpg',
           }}
+          sx={{
+            height: { '@base': 100, '@sm': 120 },
+            width: { '@base': 100, '@sm': 120 },
+          }}
         />
       </View>
       <Image
         source={{
           uri: 'https://i.pinimg.com/originals/ce/27/87/ce27870499a90e05363c91afe6b04aed.png',
         }}
-        resizeMode="cover"
-        sx={{ height: 100, aspectRatio: 1.7, marginLeft: 20 }}
+        sx={{
+          height: { '@base': 100, '@sm': 120 },
+          aspectRatio: 1.7,
+          marginLeft: 20,
+        }}
       />
     </View>
   );

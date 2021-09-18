@@ -6,7 +6,8 @@
       "react-native-styled-variants": ["../src/index"]
     },
     "lib": [
-      "esnext"
+      "esnext",
+      "DOM"
     ],
     "allowJs": true,
     "skipLibCheck": true,
