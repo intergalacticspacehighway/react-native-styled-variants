@@ -294,7 +294,9 @@ const visitor = {
       // Component template
       const componentTemplate = template(
         `
-          ${reactNameSpace}.forwardRef((VARIANTS_PROPS, ref) => {
+          ${reactNameSpace}.forwardRef((props, ref) => {
+
+            COMPONENT_PROPS
             
             BREAKPOINT_HOOK
 
@@ -334,7 +336,7 @@ const visitor = {
                 : 'onFocus={onFocusProp} onBlur={onBlurProp}'
             }
 
-            ref={ref} style={style} {...props} />;
+            ref={ref} style={style} {...rest} />;
           })
         `,
         {
@@ -400,7 +402,7 @@ const visitor = {
         THEME_HOOK: '',
         STYLE_MEMO_DEPS: '',
         COMP: t.jSXIdentifier(componentIdentifier.name),
-        VARIANTS_PROPS: `{style: propStyle, onPressIn: onPressInProp, onPressOut: onPressOutProp, onHoverIn: onHoverInProp , onHoverOut: onHoverOutProp, onFocus: onFocusProp, onBlur: onBlurProp, ${variantProps} ...props}`,
+        COMPONENT_PROPS: `const {style: propStyle, onPressIn: onPressInProp, onPressOut: onPressOutProp, onHoverIn: onHoverInProp , onHoverOut: onHoverOutProp, onFocus: onFocusProp, onBlur: onBlurProp, ${variantProps} ...rest} = props;`,
 
         STYLE_OBJECT: styleObjectExpression,
       };

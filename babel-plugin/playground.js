@@ -26,18 +26,7 @@ function transformToStyles(code) {
 
 transformToStyles(`
 const Button = createVariant(Pressable, {
-  borderWidth: 2,
-  borderRadius: 4,
-  paddingHorizontal: Platform.OS({web: '$space.5'}),
-  paddingVertical: '$space.4',
-  borderColor: '$colors.red.2',
-  width: 150,
-  alignItems: 'center',
-  _hover: {
-    backgroundColor: '$colors.red.0',
-  },
-  _pressed: {
-    backgroundColor: '$colors.red.1',
-  },
+  backgroundColor: "$colors.red",
 });
+
 `);
