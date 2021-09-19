@@ -10,15 +10,11 @@ function getRandomInt(max) {
 }
 
 const avatarImages = {
-  sad: 'https://images2.fanpop.com/image/photos/13300000/Depressed-zuko-13308184-640-480.jpg',
-  happy:
-    'https://www.looper.com/img/gallery/why-aangs-power-in-avatar-the-last-airbender-is-more-terrifying-than-you-think/intro-1616420787.jpg',
-  blush:
-    'https://imgix.bustle.com/uploads/image/2020/7/20/8524871a-79a5-448d-9d24-418c50a58618-avatar-aang.png?w=1200&h=630&fit=crop&crop=faces&fm=jpg',
-  peace:
-    'https://therockle.com/wp-content/uploads/2021/05/Best-Uncle-Iroh-Quotes-min-2.jpg',
+  iroh: 'https://therockle.com/wp-content/uploads/2021/05/Best-Uncle-Iroh-Quotes-min-2.jpg',
   fire: 'https://i.redd.it/o8zi2sok5a461.jpg',
   zuko: 'https://images.squarespace-cdn.com/content/57fd5882e6f2e1489b27ecb7/1595447779082-AN5W87XI9KSMLVMSMR0C/avatar-the-last-airbenderzuko.png?content-type=image%2Fpng',
+  katara:
+    'https://qph.fs.quoracdn.net/main-qimg-2e4d0f3f76aad3529ec36c6f0b643301',
 };
 
 const mood = Object.keys(avatarImages);
@@ -143,7 +139,7 @@ const Button = createVariant(Pressable, {
 });
 
 const StyledText = createVariant(Text, {
-  color: '$colors.white',
+  color: '$colors.maroon.0',
   fontSize: '$fontSize.lg',
   variants: {
     uppercase: {

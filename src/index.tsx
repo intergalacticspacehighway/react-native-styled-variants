@@ -1,3 +1,4 @@
+//@ts-nocheck
 import React, { ReactNode, useCallback } from 'react';
 import { Dimensions, StyleSheet } from 'react-native';
 import type { GetVariantProps, IStyles, IThemeProviderProps } from './types';
@@ -234,6 +235,11 @@ export const useFocus = ({ onFocus, onBlur }: any) => {
   };
 };
 
+type ICreateTheme<Theme, Breakpoints> = {
+  theme: Theme;
+  breakpoints: Breakpoints;
+};
+
 export function createTheme<Theme, Breakpoints>({
   theme,
   breakpoints,
@@ -252,11 +258,10 @@ export function createTheme<Theme, Breakpoints>({
       />
     );
   }
-  // The below is a noOp function, it'll be removed by the transpiler
-  // Todo - improve TS support
+  // The below is a noOp function, it'll be removed by the transpiler and replaced with React component
   function createVariant<Component, DefinedStyles>(
     _Component: Component,
-    _styles: DefinedStyles & IStyles<Theme, Breakpoints, DefinedStyles>
+    _styles: IStyles<Theme, Breakpoints, DefinedStyles>
   ) {
     return {} as React.FC<
       GetVariantProps<DefinedStyles> & React.ComponentProps<Component>

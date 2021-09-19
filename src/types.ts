@@ -28,18 +28,30 @@ type IBreakpoints = {
   '2xl'?: number;
 };
 
-type ExtendStyleWithBreakpointValues<Style, Breakpoints> = {
+type AppendPrefixAndTokenise<Theme, IsFirstIteration> = keyof {
+  [Key in keyof Theme as Theme[Key] extends string | number
+    ? `${Key}`
+    : // If first iteration append $
+      `${IsFirstIteration extends true
+        ? '$'
+        : ''}${Key}.${AppendPrefixAndTokenise<Theme[Key], false>}`]: true;
+};
+
+type TokeniseTheme<Theme> = AppendPrefixAndTokenise<Theme, true>;
+
+type ExtendStyleWithBreakpointValues<Theme, Style, Breakpoints> = {
   [Key in keyof Style]?:
-    | Style[Key]
-    | string // Here we need theme tokens instead of string.
+    | TokeniseTheme<Theme>
+    | (Style[Key] & {})
     | {
         [Breakpoint in keyof Breakpoints as `@${Breakpoint}`]?:
-          | Style[Key]
-          | string; // Here we need theme tokens instead of string.
+          | TokeniseTheme<Theme>
+          | (Style[Key] & {});
       };
 };
 
 type RNStyles<Theme, BreakPoints> = ExtendStyleWithBreakpointValues<
+  Theme,
   TextStyle & ImageStyle & ViewStyle,
   BreakPoints
 >;
