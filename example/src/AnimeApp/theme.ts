@@ -50,7 +50,7 @@ const theme = {
   },
 };
 
-export const { createVariant, ThemeProvider } = createTheme({
+export const { createVariant, ThemeProvider, sx } = createTheme({
   theme,
   breakpoints: { base: 0, sm: 480, md: 720 },
 });
