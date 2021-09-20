@@ -51,7 +51,7 @@ type ExtendStyleWithBreakpointValues<Theme, Style, Breakpoints> = {
       };
 };
 
-type RNStyles<Theme, BreakPoints> = ExtendStyleWithBreakpointValues<
+export type RNStyles<Theme, BreakPoints> = ExtendStyleWithBreakpointValues<
   Theme,
   TextStyle & ImageStyle & ViewStyle,
   BreakPoints

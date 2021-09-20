@@ -1,7 +1,11 @@
-//@ts-nocheck
 import React, { ReactNode, useCallback } from 'react';
 import { Dimensions, StyleSheet } from 'react-native';
-import type { GetVariantProps, IStyles, IThemeProviderProps } from './types';
+import type {
+  GetVariantProps,
+  IStyles,
+  IThemeProviderProps,
+  RNStyles,
+} from './types';
 import {
   useControlledState,
   getCurrentBreakpoint,
@@ -259,7 +263,7 @@ export function createTheme<Theme, Breakpoints>({
     );
   }
   // The below is a noOp function, it'll be removed by the transpiler and replaced with React component
-  function createVariant<Component, DefinedStyles>(
+  function createVariant<Component extends React.ComponentType, DefinedStyles>(
     _Component: Component,
     _styles: IStyles<Theme, Breakpoints, DefinedStyles>
   ) {
@@ -268,5 +272,9 @@ export function createTheme<Theme, Breakpoints>({
     >;
   }
 
-  return { ThemeProvider, createVariant };
+  function sx(_styles: RNStyles<Theme, Breakpoints>) {
+    return {} as ReturnType<typeof StyleSheet.create>;
+  }
+
+  return { ThemeProvider, createVariant, sx };
 }
