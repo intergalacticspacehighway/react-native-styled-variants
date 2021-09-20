@@ -239,11 +239,6 @@ export const useFocus = ({ onFocus, onBlur }: any) => {
   };
 };
 
-type ICreateTheme<Theme, Breakpoints> = {
-  theme: Theme;
-  breakpoints: Breakpoints;
-};
-
 export function createTheme<Theme, Breakpoints>({
   theme,
   breakpoints,

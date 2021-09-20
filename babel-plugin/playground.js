@@ -27,22 +27,24 @@ function transformToStyles(code) {
 }
 
 transformToStyles(`
-const shadow = {x: 1}
-export default () => {
-  return (
-    <SafeAreaProvider>
-      <ThemeProvider>
-        <Container>
-          <View style={sx({ flex: 1, ...shadow })}>
-            <View style={sx({ flex: 2 })}>
-              <Header />
-            </View>
-            <Screen />
-          </View>
-        </Container>
-      </ThemeProvider>
-    </SafeAreaProvider>
-  );
-};
 
+const StyledText = createVariant(Text, {
+  color: '$colors.maroon.0',
+  fontSize: '$fontSize.lg',
+  variants: {
+    uppercase: {
+      true: {
+        textTransform: 'uppercase',
+      },
+    },
+    bold: {
+      true: {
+        fontWeight: 'bold',
+      },
+    },
+  },
+  defaultVariants: {
+    bold: true,
+  },
+});
 `);

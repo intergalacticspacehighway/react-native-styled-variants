@@ -1,6 +1,6 @@
 {
   "name": "react-native-styled-variants",
-  "version": "0.1.1-alpha.1",
+  "version": "0.1.1-alpha.2",
   "description": "Create styled variants that are transpiled to StyleSheet during build time",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -78,7 +78,6 @@
       "<rootDir>/lib/"
     ]
   },
-
   "commitlint": {
     "extends": [
       "@commitlint/config-conventional"
