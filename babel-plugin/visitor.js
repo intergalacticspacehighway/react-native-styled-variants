@@ -379,11 +379,16 @@ const visitor = {
           variantProps =
             variantsIdentifier
               .map((v) => {
-                let value = defaultVariants.value.properties.find(
+                let property = defaultVariants.value.properties.find(
                   (p) => p.key.name === v
-                ).value.value;
-                value = typeof value === 'string' ? `"${value}"` : value;
-                return `${v}=${value}`;
+                );
+                if (property) {
+                  let value = property.value.value;
+                  value = typeof value === 'string' ? `"${value}"` : value;
+                  return `${v}=${value}`;
+                } else {
+                  return v;
+                }
               })
               .join(', ') + ',';
         } else {
