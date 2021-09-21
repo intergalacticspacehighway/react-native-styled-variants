@@ -61,12 +61,6 @@ let visitor = {
           .get('attributes')
           .filter((attr) => t.isJSXAttribute(attr.node));
 
-        const sxAttributes = jsxAttributes.filter(
-          (attr) =>
-            attr.node.name.name === 'sx' ||
-            attr.node.name.name === 'contentContainerSX'
-        );
-
         const styleAttributePath = jsxAttributes.find(
           (attr) => attr.node.name.name === 'style'
         );

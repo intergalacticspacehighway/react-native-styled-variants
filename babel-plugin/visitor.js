@@ -1,12 +1,7 @@
 const template = require('@babel/template').default;
 const t = require('@babel/types');
 const { addNamespace } = require('@babel/helper-module-imports');
-
-let count = 0;
-const getKey = () => {
-  count++;
-  return count.toString();
-};
+const { getComponentId } = require('./hash');
 
 const source = 'react-native-styled-variants';
 
@@ -22,7 +17,7 @@ const visitor = {
     importsAdded = false;
   },
   // Traverse for call expression beginning with `styled()`
-  CallExpression(path) {
+  CallExpression(path, state) {
     if (path.node.callee.name === 'createVariant') {
       if (!importsAdded) {
         // Adds import * as X from "package"
@@ -309,7 +304,7 @@ const visitor = {
             FOCUS_HOOK
             
             
-           const styleSheet = ${packageNameSpace}.useStyleSheet(KEY, ({theme, currentBreakpoint, getClosestResponsiveValue}) => STYLE_OBJECT, USE_STYLE_SHEET_DEPS);
+           const styleSheet = ${packageNameSpace}.useStyleSheet("KEY", ({theme, currentBreakpoint, getClosestResponsiveValue}) => STYLE_OBJECT, USE_STYLE_SHEET_DEPS);
            
           
             const style = ${reactNameSpace}.useMemo(() => {
@@ -317,7 +312,7 @@ const visitor = {
 
               return newStyle;
             }, STYLE_MEMO_DEPS);
-          
+
             return <COMP ${
               hasHoverStyles
                 ? 'onHoverIn={onHoverIn} onHoverOut={onHoverOut}'
@@ -344,7 +339,8 @@ const visitor = {
         }
       );
 
-      const KEY = getKey();
+      const KEY = getComponentId(state);
+      console.log('kekek ', KEY);
       const variantStyles = variantsIdentifier
         .map(
           (v) => `

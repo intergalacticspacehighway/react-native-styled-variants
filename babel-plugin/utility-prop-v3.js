@@ -20,11 +20,6 @@ const source = 'react-native-styled-variants';
 
 const PACKAGE_NAMESPACE_HINT = '_rnStyledVariants_';
 
-const attrMaps = {
-  sx: 'style',
-  contentContainerSX: 'contentContainerStyle',
-};
-
 const getThemeTokenFromThemeLiteral = (node, themeIdentifier) => {
   const tokens = node.value.replace('$', themeIdentifier.name + '.').split('.');
   const token = tokens.shift();
@@ -82,9 +77,131 @@ let visitor = {
           .get('attributes')
           .filter((attr) => t.isJSXAttribute(attr.node));
 
-        let styleAttribute = jsxAttributes.find(
+        let styleAttributePath = jsxAttributes.find(
           (attr) => attr.node.name.name === 'style'
         );
+
+        // Check for sx functions in style prop style={sx({})}
+        /*********************/
+        /*********************/
+        /*********************/
+        /*********************/
+        if (styleAttributePath) {
+          let containsVariables = false;
+
+          styleAttributePath.traverse({
+            CallExpression(path) {
+              if (
+                path.node.callee.name === 'sx' &&
+                t.isObjectExpression(path.node.arguments[0])
+              ) {
+                const styleId = getStyleId();
+                path.traverse({
+                  SpreadElement() {
+                    containsVariables = true;
+                  },
+                  ObjectProperty(path) {
+                    // If at any point we come across a variable in styles
+                    if (t.isIdentifier(path.node.value)) {
+                      containsVariables = true;
+                    }
+                    // Converts $color.yellow => theme['color']['yellow']
+                    if (t.isStringLiteral(path.node.value)) {
+                      const literalNode = path.node.value;
+                      // convert $colors.blue.500 => theme["blue"]["500"]
+                      if (literalNode.value.includes('$')) {
+                        hasThemeToken = true;
+
+                        const tokens = literalNode.value
+                          .replace('$', themeIdentifier.name + '.')
+                          .split('.');
+                        const token = tokens.shift();
+                        const property = tokens.shift();
+                        let tokenMemberExpression = t.memberExpression(
+                          t.identifier(token),
+                          t.stringLiteral(property),
+                          true
+                        );
+                        while (tokens.length) {
+                          const property = tokens.shift();
+                          tokenMemberExpression = t.memberExpression(
+                            tokenMemberExpression,
+                            t.stringLiteral(property),
+                            true
+                          );
+                        }
+
+                        path.node.value = tokenMemberExpression;
+                      }
+                    }
+
+                    // Converts {"@sm": 20, "@base": 10} => resolveResponsiveValue({sm: 20, base: 10});
+                    else if (t.isObjectExpression(path.node.value)) {
+                      const objectExpressionNode = path.node.value;
+
+                      if (
+                        objectExpressionNode.properties.some((p) => {
+                          return (
+                            p.key && p.key.value && p.key.value.includes('@')
+                          );
+                        })
+                      ) {
+                        hasResponsiveToken = true;
+
+                        objectExpressionNode.properties.forEach(
+                          (p) =>
+                            (p.key = t.stringLiteral(
+                              p.key.value.replace('@', '')
+                            ))
+                        );
+
+                        path.node.value = t.callExpression(
+                          resolveResponsiveValueMemberExpression,
+                          [objectExpressionNode]
+                        );
+                      }
+                    }
+                  },
+                });
+
+                let sxReplacement;
+                // If contains a variable, add inline object instead of creating stylesheet
+                if (containsVariables) {
+                  sxReplacement = path.node.arguments[0];
+                } else {
+                  // Append style expression to function level stylesheet object
+                  styleSheet.properties.push(
+                    t.objectProperty(
+                      t.identifier(styleId),
+                      path.node.arguments[0]
+                    )
+                  );
+
+                  sxReplacement = t.memberExpression(
+                    styleSheetIdentifier,
+                    t.stringLiteral(styleId),
+                    true
+                  );
+
+                  if (hasThemeToken) {
+                    hasThemeStyleSheet = true;
+                  }
+                  if (hasResponsiveToken) {
+                    hasResponsiveStyleSheet = true;
+                  }
+                }
+
+                path.replaceWith(sxReplacement);
+              }
+            },
+          });
+        }
+
+        // Check for utility props in jsx
+        /*********************/
+        /*********************/
+        /*********************/
+        /*********************/
 
         const utilityAttrs = jsxAttributes.filter(
           (attr) => utilityProps[attr.node.name.name]
@@ -132,8 +249,11 @@ let visitor = {
                 t.objectProperty(t.identifier(actualPropName), prop.node.value)
               );
             }
-            // Case : mt={x}
-            else if (t.isIdentifier(prop.node.value.expression)) {
+            // Case : mt={x} or mt={x.y}
+            else if (
+              t.isIdentifier(prop.node.value.expression) ||
+              t.isMemberExpression(prop.node.value.expression)
+            ) {
               variableStyles.properties.push(
                 t.objectProperty(
                   t.identifier(actualPropName),
@@ -249,7 +369,7 @@ let visitor = {
               )
             : undefined;
 
-          if (!styleAttribute) {
+          if (!styleAttributePath) {
             let newStyle;
             if (styleSheetMemberExpression && hasVariableStyles) {
               newStyle = [styleSheetMemberExpression, variableStyles];
@@ -277,9 +397,11 @@ let visitor = {
           }
           // Case 2 - style is object. style={{margin: 10}} => style={[styleSheet['1'], {margin:10}]}
           // Case 3 - style is a identifier style={style} => style={[styleSheet['1'], style]}
+          // Case 4- style is a member expression style={style.y} => style={[styleSheet['1'], style]}
           else if (
-            t.isObjectExpression(styleAttribute.node.value.expression) ||
-            t.isIdentifier(styleAttribute.node.value.expression)
+            t.isObjectExpression(styleAttributePath.node.value.expression) ||
+            t.isIdentifier(styleAttributePath.node.value.expression) ||
+            t.isMemberExpression(styleAttributePath.node.value.expression)
           ) {
             let styleArrayValues = [];
 
@@ -291,21 +413,23 @@ let visitor = {
               styleArrayValues.unshift(styleSheetMemberExpression);
             }
 
-            styleAttribute.node.value.expression = t.arrayExpression([
+            styleAttributePath.node.value.expression = t.arrayExpression([
               ...styleArrayValues,
-              styleAttribute.node.value.expression,
+              styleAttributePath.node.value.expression,
             ]);
           }
-          // Case 4 - style is array. style={[{margin: 10}]} => style={[styleSheet['1'], {margin:10}]}
-          else if (t.isArrayExpression(styleAttribute.node.value.expression)) {
+          // Case 5 - style is array. style={[{margin: 10}]} => style={[styleSheet['1'], {margin:10}]}
+          else if (
+            t.isArrayExpression(styleAttributePath.node.value.expression)
+          ) {
             if (hasVariableStyles) {
-              styleAttribute.node.value.expression.elements.unshift(
+              styleAttributePath.node.value.expression.elements.unshift(
                 variableStyles
               );
             }
 
             if (styleSheetMemberExpression) {
-              styleAttribute.node.value.expression.elements.unshift(
+              styleAttributePath.node.value.expression.elements.unshift(
                 styleSheetMemberExpression
               );
             }

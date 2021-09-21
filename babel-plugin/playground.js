@@ -2,7 +2,6 @@ const { parse } = require('@babel/parser');
 const traverse = require('@babel/traverse').default;
 const generate = require('@babel/generator').default;
 const visitor = require('./visitor');
-const utilityPropVisitor = require('./utility-prop-v2');
 const utilityPropVisitorv3 = require('./utility-prop-v3');
 
 function transformToStyles(code) {
@@ -15,11 +14,9 @@ function transformToStyles(code) {
     ...visitor,
     'Program'(path) {
       visitor.Program(path);
-      utilityPropVisitor.Program(path);
       utilityPropVisitorv3.Program(path);
     },
     'FunctionDeclaration|ArrowFunctionExpression'(path) {
-      utilityPropVisitor['FunctionDeclaration|ArrowFunctionExpression'](path);
       utilityPropVisitorv3['FunctionDeclaration|ArrowFunctionExpression'](path);
     },
   });
