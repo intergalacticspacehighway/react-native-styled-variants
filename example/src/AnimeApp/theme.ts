@@ -50,7 +50,19 @@ const theme = {
   },
 };
 
+const breakpoints = {
+  'base': 0,
+  'sm': 480,
+  'md': 768,
+  'lg': 992,
+  'xl': 1280,
+  '2xl': 1536,
+};
+
 export const { createVariant, ThemeProvider, sx } = createTheme({
   theme,
-  breakpoints: { base: 0, sm: 480, md: 720 },
+  breakpoints,
 });
+
+export type ITheme = typeof theme;
+export type IBreakpoints = typeof breakpoints;

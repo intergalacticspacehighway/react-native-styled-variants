@@ -90,10 +90,10 @@ const AnimatedImage = ({ uri }) => {
       }}
       resizeMode="contain"
       flex={0.9}
-      width="95%"
       borderRadius={10}
       style={[
         {
+          width: '95%',
           opacity: opacityValue,
           transform: [
             {

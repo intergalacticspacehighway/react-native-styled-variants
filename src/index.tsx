@@ -273,3 +273,5 @@ export function createTheme<Theme, Breakpoints>({
 
   return { ThemeProvider, createVariant, sx };
 }
+
+export type { RNStyles };

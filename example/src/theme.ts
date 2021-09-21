@@ -344,3 +344,6 @@ export const breakpoints = {
   'xl': 1280,
   '2xl': 1536,
 };
+
+export type ITheme = typeof theme;
+export type IBreakpoints = typeof breakpoints;
