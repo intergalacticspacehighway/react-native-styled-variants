@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Pressable, Text, View, Platform } from 'react-native';
 import { Header } from '../components/Header';
-import { createVariant, ThemeProvider, sx } from './theme';
+import { createVariant, ThemeProvider } from './theme';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Animated } from 'react-native';
 
@@ -32,8 +32,8 @@ export default () => {
     <SafeAreaProvider>
       <ThemeProvider>
         <Container>
-          <View style={sx({ flex: 1 })}>
-            <View style={sx({ flex: 2 })}>
+          <View flex={1}>
+            <View flex={2}>
               <Header />
             </View>
             <Screen />
@@ -52,21 +52,10 @@ const Screen = () => {
 
   return (
     <>
-      <View
-        style={sx({
-          justifyContent: 'center',
-          alignItems: 'center',
-          flex: 4,
-        })}
-      >
+      <View justifyContent="center" alignItems="center" flex={4}>
         <AnimatedImage uri={avatarImages[mood[imageIndex]]} />
       </View>
-      <View
-        style={sx({
-          alignItems: 'center',
-          flex: 1,
-        })}
-      >
+      <View alignItems="center" flex={1}>
         <Button onPress={changeImage} accessibilityRole="button">
           <StyledText uppercase bold>
             {mood[imageIndex]}
@@ -100,8 +89,10 @@ const AnimatedImage = ({ uri }) => {
         cache: 'force-cache',
       }}
       resizeMode="contain"
+      flex={0.9}
+      width="95%"
+      borderRadius={10}
       style={[
-        sx({ flex: 0.9, width: '95%', borderRadius: 10 }),
         {
           opacity: opacityValue,
           transform: [
