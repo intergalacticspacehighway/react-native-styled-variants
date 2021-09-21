@@ -224,7 +224,7 @@ let visitor = {
                   }
                 }
               }
-              // Might be shadowOffset
+              // Might be shadowOffset. Put such objects in variable style for now.
               else {
                 variableStyles.properties.push(
                   t.objectProperty(
