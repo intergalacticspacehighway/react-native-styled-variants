@@ -45,7 +45,7 @@ export const Header = () => {
         source={{
           uri: 'https://i.pinimg.com/originals/ce/27/87/ce27870499a90e05363c91afe6b04aed.png',
         }}
-        height={{}}
+        height={{ '@base': 100, '@sm': 120 }}
         aspectRatio={1.7}
         marginLeft={20}
       />
