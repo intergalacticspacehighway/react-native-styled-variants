@@ -3,6 +3,7 @@ const traverse = require('@babel/traverse').default;
 const generate = require('@babel/generator').default;
 const visitor = require('./visitor');
 const utilityPropVisitor = require('./utility-prop-v2');
+const utilityPropVisitorv3 = require('./utility-prop-v3');
 
 function transformToStyles(code) {
   const ast = parse(code, {
@@ -15,9 +16,11 @@ function transformToStyles(code) {
     'Program'(path) {
       visitor.Program(path);
       utilityPropVisitor.Program(path);
+      utilityPropVisitorv3.Program(path);
     },
     'FunctionDeclaration|ArrowFunctionExpression'(path) {
       utilityPropVisitor['FunctionDeclaration|ArrowFunctionExpression'](path);
+      utilityPropVisitorv3['FunctionDeclaration|ArrowFunctionExpression'](path);
     },
   });
 
@@ -27,24 +30,20 @@ function transformToStyles(code) {
 }
 
 transformToStyles(`
-
-const StyledText = createVariant(Text, {
-  color: '$colors.maroon.0',
-  fontSize: '$fontSize.lg',
-  variants: {
-    uppercase: {
-      true: {
-        textTransform: 'uppercase',
-      },
-    },
-    bold: {
-      true: {
-        fontWeight: 'bold',
-      },
-    },
-  },
-  defaultVariants: {
-    bold: true,
-  },
-});
+  const App = () => {
+    return  <View flex={1}
+    shadowOffset={{
+      width: 0,
+      height: 2,
+    }}
+    shadowOpacity={0.25}
+    shadowRadius={3.84}
+    elevation={5}
+    >
+    <View flex={2}>
+      <Header />
+    </View>
+    <Screen />
+  </View>
+  }
 `);
