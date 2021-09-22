@@ -218,4 +218,15 @@ describe('test sx transform plugin', () => {
     const output = transformToStyles(code);
     expect(output).toMatchSnapshot();
   })
+
+  it("adds conditional sx property in style", () => {
+    const code = `
+      const App = () => {
+        const pressed = false;
+        return <View sx={pressed ? {backgroundColor: '$colors.blue'} : {}} style={[{margin: 10}]} />
+      }
+    `
+    const output = transformToStyles(code);
+    expect(output).toMatchSnapshot();
+  })
 })
