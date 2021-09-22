@@ -240,4 +240,37 @@ describe('test sx transform plugin', () => {
     const output = transformToStyles(code);
     expect(output).toMatchSnapshot();
   })
+
+  it("verifies sx is added inline when it contains variable", () => {
+    const code = `
+      const App = () => {
+        const a = 10;
+        return <View sx={{padding: a}} style={[{margin: 10}]} />
+      }
+    `
+    const output = transformToStyles(code);
+    expect(output).toMatchSnapshot();
+  })
+
+  it("verifies sx is added inline when it contains variable - conditional", () => {
+    const code = `
+      const App = () => {
+        const a = 10;
+        return <View sx={a ? {color: "black"} : {}} style={[{margin: 10}]} />
+      }
+    `
+    const output = transformToStyles(code);
+    expect(output).toMatchSnapshot();
+  })
+
+  it("verifies sx is added inline when it contains variable in responsive value", () => {
+    const code = `
+      const App = () => {
+        const a = 'black';
+        return <View sx={{color: {"@sm" : a} }} />
+      }
+    `
+    const output = transformToStyles(code);
+    expect(output).toMatchSnapshot();
+  })
 })

@@ -371,7 +371,6 @@ const App = () => {
 exports[`test sx transform plugin creates memoized stylesheet without dependency array 1`] = `
 "import * as _rnStyledVariants__react from \\"react\\";
 import { StyleSheet as _rnStyledVariants__styleSheet } from \\"react-native\\";
-import * as _rnStyledVariants_ from \\"react-native-styled-variants\\";
 
 const App = () => {
   const _styleSheet = _rnStyledVariants__react.useMemo(() => _rnStyledVariants__styleSheet.create({
@@ -403,5 +402,50 @@ const App = () => {
   return <ScrollView style={[{
     margin: 10
   }]} contentContainerStyle={_styleSheet[\\"1\\"]} />;
+};"
+`;
+
+exports[`test sx transform plugin verifies sx is added inline when it contains variable - conditional 1`] = `
+"import * as _rnStyledVariants__react from \\"react\\";
+import { StyleSheet as _rnStyledVariants__styleSheet } from \\"react-native\\";
+
+const App = () => {
+  const a = 10;
+  return <View style={[a ? {
+    color: \\"black\\"
+  } : {}, {
+    margin: 10
+  }]} />;
+};"
+`;
+
+exports[`test sx transform plugin verifies sx is added inline when it contains variable 1`] = `
+"import * as _rnStyledVariants__react from \\"react\\";
+import { StyleSheet as _rnStyledVariants__styleSheet } from \\"react-native\\";
+
+const App = () => {
+  const a = 10;
+  return <View style={[{
+    padding: a
+  }, {
+    margin: 10
+  }]} />;
+};"
+`;
+
+exports[`test sx transform plugin verifies sx is added inline when it contains variable in responsive value 1`] = `
+"import * as _rnStyledVariants__react from \\"react\\";
+import { StyleSheet as _rnStyledVariants__styleSheet } from \\"react-native\\";
+import * as _rnStyledVariants_ from \\"react-native-styled-variants\\";
+
+const App = () => {
+  const _currentBreakpoint = _rnStyledVariants_.useCurrentBreakpoint();
+
+  const a = 'black';
+  return <View style={{
+    color: _currentBreakpoint.resolveResponsiveValue({
+      \\"sm\\": a
+    })
+  }} />;
 };"
 `;

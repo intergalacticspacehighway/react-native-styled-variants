@@ -1,7 +1,7 @@
-import React from 'react';
-import AnimeApp from './AnimeApp/App';
-// import BenchMarkApp from './BenchmarkApp/Benchmark';
-
-export default function App() {
-  return <AnimeApp />;
-}
+const App = () => {
+  return (
+    <View
+      sx={{ margin: 10, backgroundColor: '$colors.primary', padding: 10 }}
+    />
+  );
+};

@@ -101,13 +101,22 @@ let visitor = {
             t.isObjectExpression(sxAttribute.node.value.expression)
           ) {
             const properties = sxAttribute.get('value.expression.properties');
+
+            // Search for variables in sx attribute
             properties.forEach((p) => {
               const value = p.get('value');
-              value.traverse({
-                Identifier() {
-                  containsVariables = true;
-                },
-              });
+              // Case sx={{margin: a}}
+              if (t.isIdentifier(value.node)) {
+                containsVariables = true;
+              }
+              // Case sx={{margin: {'@sm': a} }}
+              else {
+                value.traverse({
+                  Identifier() {
+                    containsVariables = true;
+                  },
+                });
+              }
             });
           }
 
