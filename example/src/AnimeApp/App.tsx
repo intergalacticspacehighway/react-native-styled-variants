@@ -57,9 +57,17 @@ const Screen = () => {
       </View>
       <View alignItems="center" flex={1}>
         <Button onPress={changeImage} accessibilityRole="button">
-          <StyledText uppercase bold>
-            {mood[imageIndex]}
-          </StyledText>
+          {({ pressed }) => {
+            return (
+              <StyledText
+                uppercase
+                bold
+                color={pressed ? '$colors.white' : '$colors.blue.1'}
+              >
+                {mood[imageIndex]}
+              </StyledText>
+            );
+          }}
         </Button>
       </View>
     </>
