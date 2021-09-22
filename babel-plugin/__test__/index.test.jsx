@@ -2,6 +2,7 @@ const { parse } = require('@babel/parser');
 const traverse = require('@babel/traverse').default;
 const generate = require('@babel/generator').default;
 const visitor = require('../visitor');
+const utilityPropVisitor = require('../utility-prop-visitor');
 
 function transformToStyles(code) {
   const ast = parse(code, {
@@ -9,17 +10,29 @@ function transformToStyles(code) {
     plugins: ['jsx', 'typescript'],
   });
 
-  traverse(ast, visitor);
+  traverse(ast, {
+    ...visitor,
+    'Program'(path) {
+      visitor.Program(path);
+      utilityPropVisitor.Program(path);
+    },
+    'FunctionDeclaration|ArrowFunctionExpression'(path, state) {
+      utilityPropVisitor['FunctionDeclaration|ArrowFunctionExpression'](
+        path,
+        state
+      );
+    },
+  });
 
   // generate code <- ast
   const output = generate(ast, code);
   return output.code;
 }
 
-describe('test babel transform plugin', () => {
+describe('test createVariant transform plugin', () => {
   it('generates styled component', () => {
     const code = `
-      const StyledText = styled(Text, {
+      const StyledText = createVariant(Text, {
         padding: { '@base': 30, '@md': 90, '@xl': 5 },
         backgroundColor: "$colors.indigo.500",
         variants: {
@@ -50,7 +63,7 @@ describe('test babel transform plugin', () => {
 
   it('generates styled component for baseStyle', () => {
     const code = `
-    const StyledPressable = styled(Pressable, {
+    const StyledPressable = createVariant(Pressable, {
       padding: "$space.3",
       backgroundColor: "$colors.blue.800",
     });
@@ -61,7 +74,7 @@ describe('test babel transform plugin', () => {
 
   it('verifies base hover styles', () => {
     const code = `
-    const StyledPressable = styled(Pressable, {
+    const StyledPressable = createVariant(Pressable, {
       padding: "$space.3",
       backgroundColor: "$colors.blue.800",
       _hover: {
@@ -82,7 +95,7 @@ describe('test babel transform plugin', () => {
 
   it('verifies base pressed styles', () => {
     const code = `
-    const StyledPressable = styled(Pressable, {
+    const StyledPressable = createVariant(Pressable, {
       padding: "$space.3",
       backgroundColor: "$colors.primary",
       _pressed: {
@@ -96,7 +109,7 @@ describe('test babel transform plugin', () => {
 
   it('verifies base/variants pressed styles', () => {
     const code = `
-    const StyledPressable = styled(Pressable, {
+    const StyledPressable = createVariant(Pressable, {
       padding: "$space.3",
       backgroundColor: "$colors.primary",
       _pressed: {
@@ -119,7 +132,7 @@ describe('test babel transform plugin', () => {
 
   it('verifies base focus styles', () => {
     const code = `
-    const StyledPressable = styled(Pressable, {
+    const StyledPressable = createVariant(Pressable, {
       padding: "$space.3",
       backgroundColor: "$colors.primary",
       _focus: {
@@ -133,7 +146,7 @@ describe('test babel transform plugin', () => {
 
   it('verifies base focus styles', () => {
     const code = `
-    const StyledPressable = styled(Pressable, {
+    const StyledPressable = createVariant(Pressable, {
       padding: "$space.3",
       backgroundColor: "$colors.primary",
       _focus: {
@@ -154,3 +167,15 @@ describe('test babel transform plugin', () => {
     expect(output).toMatchSnapshot();
   });
 });
+
+describe('test sx transform plugin', () => {
+  it("creates memoized stylesheet", () => {
+    const code = `
+      const App = () => {
+        return <View sx={{margin: 10}} />
+      }
+    `
+    const output = transformToStyles(code);
+    expect(output).toMatchSnapshot();
+  })
+})
