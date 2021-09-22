@@ -57,8 +57,10 @@ let visitor = {
       return count.toString();
     };
 
-    let hasThemeStyles = false;
-    let hasResponsiveStyles = false;
+    let hasThemeToken = false;
+    let hasResponsiveToken = false;
+    let hasThemeStyleSheet = false;
+    let hasResponsiveStyleSheet = false;
     let themeIdentifier = path.scope.generateUidIdentifier('theme');
     let breakPointIdentifier =
       path.scope.generateUidIdentifier('currentBreakpoint');
@@ -98,7 +100,7 @@ let visitor = {
             // Replace Theme tokens - '$colors.blue' => theme['colors']['blue']
             StringLiteral(path) {
               if (path.node.value.includes('$')) {
-                hasThemeStyles = true;
+                hasThemeToken = true;
                 path.replaceWith(
                   getThemeTokenFromThemeLiteral(path.node, themeIdentifier)
                 );
@@ -115,7 +117,7 @@ let visitor = {
                   return p.key && p.key.value && p.key.value.includes('@');
                 })
               ) {
-                hasResponsiveStyles = true;
+                hasResponsiveToken = true;
 
                 // Converts "@sm" to "sm"
                 path.node.properties.forEach(
@@ -153,13 +155,19 @@ let visitor = {
               newStyleValue = sxAttribute.node.value.expression;
             } else {
               // Append style expression to function level stylesheet object
-              styleSheet = t.objectExpression([
-                ...styleSheet.properties,
+              styleSheet.properties.push(
                 t.objectProperty(
                   t.identifier(styleId),
                   sxAttribute.node.value.expression
-                ),
-              ]);
+                )
+              );
+
+              if (hasThemeToken) {
+                hasThemeStyleSheet = true;
+              }
+              if (hasResponsiveToken) {
+                hasResponsiveStyleSheet = true;
+              }
 
               newStyleValue = t.memberExpression(
                 styleSheetIdentifier,
@@ -241,10 +249,10 @@ let visitor = {
 
     if (styleSheet.properties.length) {
       let memoArray = [];
-      if (hasThemeStyles) {
+      if (hasThemeStyleSheet) {
         memoArray.push(themeIdentifier);
       }
-      if (hasResponsiveStyles) {
+      if (hasResponsiveStyleSheet) {
         memoArray.push(resolveResponsiveValueMemberExpression);
       }
       const styleSheetMemoized = t.callExpression(
@@ -277,7 +285,7 @@ let visitor = {
         );
     }
 
-    if (hasThemeStyles) {
+    if (hasThemeToken) {
       path.get('body').unshiftContainer(
         'body',
         buildThemeTemplate({
@@ -287,7 +295,7 @@ let visitor = {
       );
     }
 
-    if (hasResponsiveStyles) {
+    if (hasResponsiveToken) {
       path.get('body').unshiftContainer(
         'body',
         buildBreakPointTemplate({

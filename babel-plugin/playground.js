@@ -32,6 +32,8 @@ function transformToStyles(code) {
 transformToStyles(`
 
 function App() {
+  const renderFn = () => <View sx={{margin: 20}} />
+
   return   <StyledText
   uppercase
   bold
@@ -47,6 +49,7 @@ function App() {
   }
 >
   {mood[imageIndex]}
+  {renderFn()}
 </StyledText>
 }
 `);
