@@ -16,8 +16,11 @@ function transformToStyles(code) {
       visitor.Program(path);
       utilityPropVisitorv3.Program(path);
     },
-    'FunctionDeclaration|ArrowFunctionExpression'(path) {
-      utilityPropVisitorv3['FunctionDeclaration|ArrowFunctionExpression'](path);
+    'FunctionDeclaration|ArrowFunctionExpression'(path, state) {
+      utilityPropVisitorv3['FunctionDeclaration|ArrowFunctionExpression'](
+        path,
+        state
+      );
     },
   });
 
@@ -27,20 +30,40 @@ function transformToStyles(code) {
 }
 
 transformToStyles(`
-  const App = () => {
-    return  <View flex={1}
-    shadowOffset={{
-      width: 0,
-      height: 2,
-    }}
-    shadowOpacity={0.25}
-    shadowRadius={3.84}
-    elevation={5}
-    >
-    <View flex={2}>
-      <Header />
-    </View>
-    <Screen />
-  </View>
-  }
+import React, { useEffect, useRef } from 'react';
+import { Pressable, Text, View, Platform } from 'react-native';
+import { Header } from '../components/Header';
+import { createVariant, ThemeProvider, sx } from './theme';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { Animated } from 'react-native';
+
+
+const Screen = () => {
+  const [imageIndex, setImageIndex] = React.useState(getRandomInt(mood.length));
+  const changeImage = () => {
+    setImageIndex((imageIndex + 1) % mood.length);
+  };
+
+  return (
+    <>
+      <View alignItems="center" flex={1}>
+        <Button onPress={changeImage} accessibilityRole="button">
+          {({ pressed }) => {
+            console.log('EFfe ', pressed);
+            return (
+              <StyledText
+                uppercase
+                bold
+                style={sx({ color: pressed ? '$colors.white' : undefined })}
+              >
+                {mood[imageIndex]}
+              </StyledText>
+            );
+          }}
+        </Button>
+      </View>
+    </>
+  );
+};
+
 `);

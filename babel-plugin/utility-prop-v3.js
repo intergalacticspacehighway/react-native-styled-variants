@@ -225,135 +225,77 @@ let visitor = {
           let variableStyles = t.objectExpression([]);
 
           utilityAttrs.forEach((prop) => {
+            let containsVariables = false;
             let actualPropName = prop.node.name.name;
             if (typeof utilityProps[actualPropName] === 'string') {
               actualPropName = utilityProps[actualPropName];
             }
 
-            // Case : mt="3"
-            if (t.isLiteral(prop.node.value)) {
-              // Theme token is used in literal prop. Convert $colors.500 to theme['colors']['500']
-              if (
-                t.isStringLiteral(prop.node.value) &&
-                prop.node.value.value.includes('$')
-              ) {
-                hasThemeToken = true;
-                hasThemeStyleSheet = true;
-                prop.node.value = getThemeTokenFromThemeLiteral(
-                  prop.node.value,
-                  themeIdentifier
-                );
-              }
-
-              styleSheetStyle.properties.push(
-                t.objectProperty(t.identifier(actualPropName), prop.node.value)
-              );
+            // Converts <View a="1" /> => <View a={"1"} />
+            if (!t.isJSXExpressionContainer(prop.node.value)) {
+              prop.node.value = t.jsxExpressionContainer(prop.node.value);
             }
-            // Case : mt={x} or mt={x.y}
-            else if (
-              t.isIdentifier(prop.node.value.expression) ||
-              t.isMemberExpression(prop.node.value.expression)
-            ) {
-              variableStyles.properties.push(
-                t.objectProperty(
-                  t.identifier(actualPropName),
-                  prop.node.value.expression
-                )
-              );
-            }
-            // Case : mt={'5'}
-            else if (t.isLiteral(prop.node.value.expression)) {
-              // Theme token is used in literal prop. Convert $colors.500 to theme['colors']['500']
-              if (
-                t.isStringLiteral(prop.node.value.expression) &&
-                prop.node.value.expression.value.includes('$')
-              ) {
-                hasThemeToken = true;
-                hasThemeStyleSheet = true;
-                prop.node.value.expression = getThemeTokenFromThemeLiteral(
-                  prop.node.value.expression,
-                  themeIdentifier
-                );
-              }
 
-              styleSheetStyle.properties.push(
-                t.objectProperty(
-                  t.identifier(actualPropName),
-                  prop.node.value.expression
-                )
-              );
-            }
-            // Case : mt={{"@sm": 6}}
-            else if (t.isObjectExpression(prop.node.value.expression)) {
-              const objectExpressionNode = prop.node.value.expression;
+            prop.traverse({
+              Identifier(path) {
+                containsVariables = true;
+              },
+            });
 
-              if (
-                objectExpressionNode.properties.some((p) => {
-                  return p.key && p.key.value && p.key.value.includes('@');
-                })
-              ) {
-                hasResponsiveToken = true;
-                let responsiveStyleIncludesVariable = false;
-                // Replace '@sm' => 'sm'
-                objectExpressionNode.properties.forEach((p) => {
-                  p.key = t.stringLiteral(p.key.value.replace('@', ''));
-
-                  if (t.isIdentifier(p.value)) {
-                    responsiveStyleIncludesVariable = true;
-                  }
-                  // If utility prop is a literal
-                  else if (t.isLiteral(p.value)) {
-                    // Theme token is used in literal prop. Convert $colors.500 to theme['colors']['500']
-                    if (
-                      t.isStringLiteral(p.value) &&
-                      p.value.value.includes('$')
-                    ) {
-                      hasThemeToken = true;
-                      p.value = getThemeTokenFromThemeLiteral(
-                        p.value,
-                        themeIdentifier
-                      );
-                    }
-                  }
-                });
-
-                prop.node.value.expression = t.callExpression(
-                  resolveResponsiveValueMemberExpression,
-                  [objectExpressionNode]
-                );
-
-                if (responsiveStyleIncludesVariable) {
-                  variableStyles.properties.push(
-                    t.objectProperty(
-                      t.identifier(actualPropName),
-                      prop.node.value.expression
-                    )
+            prop.traverse({
+              // Replace Theme tokens
+              StringLiteral(path) {
+                if (path.node.value.includes('$')) {
+                  hasThemeToken = true;
+                  path.replaceWith(
+                    getThemeTokenFromThemeLiteral(path.node, themeIdentifier)
                   );
-                } else {
-                  styleSheetStyle.properties.push(
-                    t.objectProperty(
-                      t.identifier(actualPropName),
-                      prop.node.value.expression
-                    )
-                  );
-                  if (hasResponsiveToken) {
-                    hasResponsiveStyleSheet = true;
-                  }
-                  if (hasThemeToken) {
-                    hasThemeStyleSheet = true;
-                  }
                 }
+              },
+            });
+
+            // Converts {sm: 20, base: 10} => getClosestBreakpointValue({sm: 20, base: 10}, currentBreakpoint);
+            // Responsive values
+            prop.traverse({
+              ObjectExpression(path) {
+                if (
+                  path.node.properties.some((p) => {
+                    return p.key && p.key.value && p.key.value.includes('@');
+                  })
+                ) {
+                  path.node.properties.forEach(
+                    (p) =>
+                      (p.key = t.stringLiteral(p.key.value.replace('@', '')))
+                  );
+
+                  hasResponsiveToken = true;
+                  path.replaceWith(
+                    t.callExpression(resolveResponsiveValueMemberExpression, [
+                      path.node,
+                    ])
+                  );
+                }
+              },
+            });
+
+            let style = prop.node.value.expression;
+
+            if (containsVariables) {
+              variableStyles.properties.push(
+                t.objectProperty(t.identifier(actualPropName), style)
+              );
+            } else {
+              styleSheetStyle.properties.push(
+                t.objectProperty(t.identifier(actualPropName), style)
+              );
+              if (hasResponsiveToken) {
+                hasResponsiveStyleSheet = true;
               }
-              // Might be shadowOffset. Put such objects in variable style for now.
-              else {
-                variableStyles.properties.push(
-                  t.objectProperty(
-                    t.identifier(actualPropName),
-                    objectExpressionNode
-                  )
-                );
+              if (hasThemeToken) {
+                hasThemeStyleSheet = true;
               }
             }
+
             // Remove the utility prop
             prop.remove();
           });

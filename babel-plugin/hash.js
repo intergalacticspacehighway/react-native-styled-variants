@@ -127,6 +127,9 @@ const getNextId = (state) => {
 };
 
 const getComponentId = (state) => {
+  if (!state) {
+    return 'test';
+  }
   // Prefix the identifier with a character because CSS classes cannot start with a number
   return `${getNameSpace(state)}sc${getFileHash(state)}${getNextId(
     state
