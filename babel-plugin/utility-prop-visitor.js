@@ -92,7 +92,12 @@ let visitor = {
         sxAttributes.forEach((sxAttribute) => {
           let newStyleValue;
           const styleAttributeName = attrMaps[sxAttribute.node.name.name];
-          const styleAttribute = jsxAttributes.find(
+
+          const newJSXAttributes = jsxPath
+            .get('attributes')
+            .filter((attr) => t.isJSXAttribute(attr.node));
+
+          const styleAttribute = newJSXAttributes.find(
             (attr) => attr.node.name.name === styleAttributeName
           );
 

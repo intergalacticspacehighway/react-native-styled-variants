@@ -35,6 +35,7 @@ const App = () => {
   return (
     <View
       sx={{ margin: a }}
+      contentContainerSX={{ margin: a }}
     />
   );
 };
