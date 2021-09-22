@@ -229,4 +229,15 @@ describe('test sx transform plugin', () => {
     const output = transformToStyles(code);
     expect(output).toMatchSnapshot();
   })
+
+  it("verifies contentContainerSX prop gets appended to contentContainerStyle prop", () => {
+    const code = `
+      const App = () => {
+        const pressed = false;
+        return <ScrollView contentContainerSX={{backgroundColor: '$colors.blue'}} style={[{margin: 10}]} />
+      }
+    `
+    const output = transformToStyles(code);
+    expect(output).toMatchSnapshot();
+  })
 })

@@ -384,3 +384,24 @@ const App = () => {
   return <View style={_styleSheet[\\"1\\"]} />;
 };"
 `;
+
+exports[`test sx transform plugin verifies contentContainerSX prop gets appended to contentContainerStyle prop 1`] = `
+"import * as _rnStyledVariants__react from \\"react\\";
+import { StyleSheet as _rnStyledVariants__styleSheet } from \\"react-native\\";
+import * as _rnStyledVariants_ from \\"react-native-styled-variants\\";
+
+const App = () => {
+  const _theme = _rnStyledVariants_.useTheme().theme;
+
+  const _styleSheet = _rnStyledVariants__react.useMemo(() => _rnStyledVariants__styleSheet.create({
+    1: {
+      backgroundColor: _theme[\\"colors\\"][\\"blue\\"]
+    }
+  }), [_theme]);
+
+  const pressed = false;
+  return <ScrollView style={[{
+    margin: 10
+  }]} contentContainerStyle={_styleSheet[\\"1\\"]} />;
+};"
+`;
