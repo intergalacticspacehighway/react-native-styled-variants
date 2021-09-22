@@ -182,7 +182,7 @@ export const useStyleSheet = (id: any, styleFn: any, dependsUpon: string[]) => {
 };
 
 const ThemeContext = React.createContext({
-  theme: null,
+  theme: {},
   currentBreakpoint: null,
   setTheme: (_theme: any) => {},
   setCurrentBreakpoint: (_currentBreakpoint: any) => {},
@@ -250,8 +250,6 @@ export function createTheme<Theme, Breakpoints>({
     return (
       <ThemeProviderImpl
         theme={theme}
-        // Todo - improve TS support
-        //@ts-ignore
         breakpoints={breakpoints}
         children={children}
       />
@@ -267,11 +265,28 @@ export function createTheme<Theme, Breakpoints>({
     >;
   }
 
-  function sx(_styles: RNStyles<Theme, Breakpoints>) {
-    return {} as ReturnType<typeof StyleSheet.create>;
+  function useTheme() {
+    const style = React.useContext(ThemeContext);
+    return { theme: style.theme, setTheme: style.setTheme } as {
+      theme: Theme;
+      setTheme: (theme: Theme) => void;
+    };
   }
 
-  return { ThemeProvider, createVariant, sx };
+  function useCurrentBreakpoint() {
+    const style = React.useContext(ThemeContext);
+    return {
+      currentBreakpoint: style.currentBreakpoint,
+      resolveResponsiveValue: style.resolveResponsiveValue,
+    } as unknown as {
+      currentBreakpoint: keyof Breakpoints;
+      resolveResponsiveValue: (values: {
+        [Key in keyof Breakpoints]?: unknown;
+      }) => unknown;
+    };
+  }
+
+  return { ThemeProvider, createVariant, useTheme, useCurrentBreakpoint };
 }
 
 export type { RNStyles };
