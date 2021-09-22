@@ -23,6 +23,26 @@ const attrMaps = {
   contentContainerSX: 'contentContainerStyle',
 };
 
+const getThemeTokenFromThemeLiteral = (node, themeIdentifier) => {
+  const tokens = node.value.replace('$', themeIdentifier.name + '.').split('.');
+  const token = tokens.shift();
+  const property = tokens.shift();
+  let tokenMemberExpression = t.memberExpression(
+    t.identifier(token),
+    t.stringLiteral(property),
+    true
+  );
+  while (tokens.length) {
+    const property = tokens.shift();
+    tokenMemberExpression = t.memberExpression(
+      tokenMemberExpression,
+      t.stringLiteral(property),
+      true
+    );
+  }
+  return tokenMemberExpression;
+};
+
 let visitor = {
   'Program'(path) {
     root = path;
@@ -68,142 +88,136 @@ let visitor = {
         );
 
         sxAttributes.forEach((sxAttribute) => {
+          let newStyleValue;
           const styleAttributeName = attrMaps[sxAttribute.node.name.name];
-          const styleAttribute = jsxAttributes.filter(
+          const styleAttribute = jsxAttributes.find(
             (attr) => attr.node.name.name === styleAttributeName
-          )[0];
+          );
 
-          if (sxAttribute) {
-            foundSXAttribute = true;
-            if (
-              t.isJSXExpressionContainer(sxAttribute.node.value) &&
-              t.isObjectExpression(sxAttribute.node.value.expression)
-            ) {
-              const styleId = getStyleId();
+          sxAttribute.traverse({
+            // Replace Theme tokens - '$colors.blue' => theme['colors']['blue']
+            StringLiteral(path) {
+              if (path.node.value.includes('$')) {
+                hasThemeStyles = true;
+                path.replaceWith(
+                  getThemeTokenFromThemeLiteral(path.node, themeIdentifier)
+                );
+              }
+            },
+          });
 
-              sxAttribute.traverse({
-                ObjectProperty: {
-                  enter(path) {
-                    // If at any point we come across a variable in styles
-                    if (t.isIdentifier(path.node.value)) {
-                      containsVariables = true;
-                    }
-                    // Converts $color.yellow => theme['color']['yellow']
-                    if (t.isStringLiteral(path.node.value)) {
-                      const literalNode = path.node.value;
-                      // convert $colors.blue.500 => theme["blue"]["500"]
-                      if (literalNode.value.includes('$')) {
-                        hasThemeStyles = true;
+          // Converts {sm: 20, base: 10} => resolveResponsiveValue({sm: 20, base: 10});
+          // Responsive values
+          sxAttribute.traverse({
+            ObjectExpression(path) {
+              if (
+                path.node.properties.some((p) => {
+                  return p.key && p.key.value && p.key.value.includes('@');
+                })
+              ) {
+                hasResponsiveStyles = true;
 
-                        const tokens = literalNode.value
-                          .replace('$', themeIdentifier.name + '.')
-                          .split('.');
-                        const token = tokens.shift();
-                        const property = tokens.shift();
-                        let tokenMemberExpression = t.memberExpression(
-                          t.identifier(token),
-                          t.stringLiteral(property),
-                          true
-                        );
-                        while (tokens.length) {
-                          const property = tokens.shift();
-                          tokenMemberExpression = t.memberExpression(
-                            tokenMemberExpression,
-                            t.stringLiteral(property),
-                            true
-                          );
-                        }
+                // Converts "@sm" to "sm"
+                path.node.properties.forEach(
+                  (p) => (p.key = t.stringLiteral(p.key.value.replace('@', '')))
+                );
 
-                        path.node.value = tokenMemberExpression;
-                      }
-                    }
+                path.replaceWith(
+                  t.callExpression(resolveResponsiveValueMemberExpression, [
+                    path.node,
+                  ])
+                );
+              }
+            },
+          });
 
-                    // Converts {"@sm": 20, "@base": 10} => resolveResponsiveValue({sm: 20, base: 10});
-                    else if (t.isObjectExpression(path.node.value)) {
-                      const objectExpressionNode = path.node.value;
-
-                      if (
-                        objectExpressionNode.properties.some((p) => {
-                          return (
-                            p.key && p.key.value && p.key.value.includes('@')
-                          );
-                        })
-                      ) {
-                        hasResponsiveStyles = true;
-
-                        objectExpressionNode.properties.forEach(
-                          (p) =>
-                            (p.key = t.stringLiteral(
-                              p.key.value.replace('@', '')
-                            ))
-                        );
-
-                        path.node.value = t.callExpression(
-                          resolveResponsiveValueMemberExpression,
-                          [objectExpressionNode]
-                        );
-                      }
-                    }
-                  },
+          // Case sx={{margin: 10}}
+          if (
+            t.isJSXExpressionContainer(sxAttribute.node.value) &&
+            t.isObjectExpression(sxAttribute.node.value.expression)
+          ) {
+            const properties = sxAttribute.get('value.expression.properties');
+            properties.forEach((p) => {
+              const value = p.get('value');
+              value.traverse({
+                Identifier() {
+                  containsVariables = true;
                 },
               });
-              const styleExpression = sxAttribute.node.value.expression;
+            });
 
-              let newStyleValue;
-              // If contains a variable, add inline object instead of creating stylesheet
-              if (containsVariables) {
-                newStyleValue = sxAttribute.node.value.expression;
-              } else {
-                // Append style expression to function level stylesheet object
-                styleSheet = t.objectExpression([
-                  ...styleSheet.properties,
-                  t.objectProperty(t.identifier(styleId), styleExpression),
-                ]);
+            const styleId = getStyleId();
 
-                newStyleValue = t.memberExpression(
-                  styleSheetIdentifier,
-                  t.stringLiteral(styleId),
-                  true
-                );
-              }
+            // If contains a variable, add inline object instead of creating stylesheet
+            if (containsVariables) {
+              newStyleValue = sxAttribute.node.value.expression;
+            } else {
+              // Append style expression to function level stylesheet object
+              styleSheet = t.objectExpression([
+                ...styleSheet.properties,
+                t.objectProperty(
+                  t.identifier(styleId),
+                  sxAttribute.node.value.expression
+                ),
+              ]);
 
-              // Remove sx attribute
-              sxAttribute.remove();
+              newStyleValue = t.memberExpression(
+                styleSheetIdentifier,
+                t.stringLiteral(styleId),
+                true
+              );
+            }
+          }
+          // Case: sx={pressed ?  {color: white} :  undefined }
+          else if (t.isJSXExpressionContainer(sxAttribute.node.value)) {
+            newStyleValue = sxAttribute.node.value.expression;
+          }
 
-              // Modify style attribute
-              // Case 1 - no style attribute
-              if (!styleAttribute) {
-                jsxPath.node.attributes.push(
-                  t.jsxAttribute(
-                    t.jsxIdentifier(styleAttributeName),
-                    t.jsxExpressionContainer(newStyleValue)
-                  )
-                );
-              }
-              // Case 2 - style is object. style={{margin: 10}} => style={[styleSheet['1'], {margin:10}]}
-              else if (
-                t.isObjectExpression(styleAttribute.node.value.expression)
-              ) {
-                styleAttribute.node.value.expression = t.arrayExpression([
-                  newStyleValue,
-                  styleAttribute.node.value.expression,
-                ]);
-              }
-              // Case 3 - style is array. style={[{margin: 10}]} => style={[styleSheet['1'], {margin:10}]}
-              else if (
-                t.isArrayExpression(styleAttribute.node.value.expression)
-              ) {
-                styleAttribute.node.value.expression.elements.unshift(
-                  newStyleValue
-                );
-              }
-              // Case 4 - style is a identifier style={style} => style={[styleSheet['1'], style]}
-              else if (t.isIdentifier(styleAttribute.node.value.expression)) {
-                styleAttribute.node.value.expression = t.arrayExpression([
-                  newStyleValue,
-                  styleAttribute.node.value.expression,
-                ]);
-              }
+          if (newStyleValue) {
+            foundSXAttribute = true;
+
+            // Remove sx attribute
+            sxAttribute.remove();
+
+            // Modify style attribute
+            // Case 1 - no style attribute
+            if (!styleAttribute) {
+              jsxPath.node.attributes.push(
+                t.jsxAttribute(
+                  t.jsxIdentifier(styleAttributeName),
+                  t.jsxExpressionContainer(newStyleValue)
+                )
+              );
+            }
+            // Case 2 - style is object. style={{margin: 10}} => style={[styleSheet['1'], {margin:10}]}
+            // Case 3 - style is a identifier style={style} => style={[styleSheet['1'], style]}
+            // Case 4- style is a member expression style={style.y} => style={[styleSheet['1'], style]}
+            // Case 5- style is a member expression style={x ? style.y : y} => style={[styleSheet['1'], x ? style.y : y]}
+            else if (
+              t.isObjectExpression(styleAttribute.node.value.expression) ||
+              t.isIdentifier(styleAttribute.node.value.expression) ||
+              t.isMemberExpression(styleAttribute.node.value.expression) ||
+              t.isConditionalExpression(styleAttribute.node.value.expression)
+            ) {
+              styleAttribute.node.value.expression = t.arrayExpression([
+                newStyleValue,
+                styleAttribute.node.value.expression,
+              ]);
+            }
+            // Case 5 - style is array. style={[{margin: 10}]} => style={[styleSheet['1'], {margin:10}]}
+            else if (
+              t.isArrayExpression(styleAttribute.node.value.expression)
+            ) {
+              styleAttribute.node.value.expression.elements.unshift(
+                newStyleValue
+              );
+            }
+            // Case 6 - style is a identifier style={style} => style={[styleSheet['1'], style]}
+            else if (t.isIdentifier(styleAttribute.node.value.expression)) {
+              styleAttribute.node.value.expression = t.arrayExpression([
+                newStyleValue,
+                styleAttribute.node.value.expression,
+              ]);
             }
           }
         });

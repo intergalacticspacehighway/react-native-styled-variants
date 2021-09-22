@@ -32,8 +32,8 @@ export default () => {
     <SafeAreaProvider>
       <ThemeProvider>
         <Container>
-          <View flex={1}>
-            <View flex={2}>
+          <View sx={{ flex: 1 }}>
+            <View sx={{ flex: 2 }}>
               <Header />
             </View>
             <Screen />
@@ -52,17 +52,37 @@ const Screen = () => {
 
   return (
     <>
-      <View justifyContent="center" alignItems="center" flex={4}>
+      <View
+        sx={{
+          justifyContent: 'center',
+          alignItems: 'center',
+          flex: 4,
+        }}
+      >
         <AnimatedImage uri={avatarImages[mood[imageIndex]]} />
       </View>
-      <View alignItems="center" flex={1}>
+      <View
+        sx={{
+          alignItems: 'center',
+          flex: 1,
+        }}
+      >
         <Button onPress={changeImage} accessibilityRole="button">
           {({ pressed }) => {
             return (
               <StyledText
                 uppercase
                 bold
-                color={pressed ? '$colors.white' : '$colors.blue.1'}
+                sx={
+                  pressed
+                    ? {
+                        color: Platform.select({
+                          web: '$colors.white',
+                          ios: '$colors.sky',
+                        }),
+                      }
+                    : undefined
+                }
               >
                 {mood[imageIndex]}
               </StyledText>
@@ -97,22 +117,18 @@ const AnimatedImage = ({ uri }) => {
         cache: 'force-cache',
       }}
       resizeMode="contain"
-      flex={0.9}
-      borderRadius={10}
-      style={[
-        {
-          width: '95%',
-          opacity: opacityValue,
-          transform: [
-            {
-              scale: opacityValue.interpolate({
-                inputRange: [0, 1],
-                outputRange: [0.95, 1],
-              }),
-            },
-          ],
-        },
-      ]}
+      sx={{ flex: 0.9, width: '95%', borderRadius: 10 }}
+      style={{
+        opacity: opacityValue,
+        transform: [
+          {
+            scale: opacityValue.interpolate({
+              inputRange: [0, 1],
+              outputRange: [0.95, 1],
+            }),
+          },
+        ],
+      }}
       key={uri}
     />
   );
@@ -153,8 +169,10 @@ const StyledText = createVariant(Text, {
         fontWeight: 'bold',
       },
     },
-  },
-  defaultVariants: {
-    bold: true,
+    buttonPressed: {
+      true: {
+        color: '$colors.white',
+      },
+    },
   },
 });

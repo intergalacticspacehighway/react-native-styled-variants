@@ -340,7 +340,6 @@ const visitor = {
       );
 
       const KEY = getComponentId(state);
-      console.log('kekek ', KEY);
       const variantStyles = variantsIdentifier
         .map(
           (v) => `
