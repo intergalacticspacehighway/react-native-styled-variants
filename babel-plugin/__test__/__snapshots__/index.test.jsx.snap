@@ -256,6 +256,58 @@ const StyledPressable = _rnStyledVariants__react.forwardRef((props, ref) => {
 });"
 `;
 
+exports[`test sx transform plugin creates memoized stylesheet and updates existing style array property 1`] = `
+"import * as _rnStyledVariants__react from \\"react\\";
+import { StyleSheet as _rnStyledVariants__styleSheet } from \\"react-native\\";
+import * as _rnStyledVariants_ from \\"react-native-styled-variants\\";
+
+const App = () => {
+  const _currentBreakpoint = _rnStyledVariants_.useCurrentBreakpoint();
+
+  const _theme = _rnStyledVariants_.useTheme().theme;
+
+  const _styleSheet = _rnStyledVariants__react.useMemo(() => _rnStyledVariants__styleSheet.create({
+    1: {
+      margin: _theme[\\"colors\\"][\\"blue\\"],
+      padding: _currentBreakpoint.resolveResponsiveValue({
+        \\"sm\\": 20,
+        \\"base\\": 10
+      })
+    }
+  }), [_theme, _currentBreakpoint.resolveResponsiveValue]);
+
+  return <View style={[_styleSheet[\\"1\\"], {
+    margin: 10
+  }]} />;
+};"
+`;
+
+exports[`test sx transform plugin creates memoized stylesheet and updates existing style property 1`] = `
+"import * as _rnStyledVariants__react from \\"react\\";
+import { StyleSheet as _rnStyledVariants__styleSheet } from \\"react-native\\";
+import * as _rnStyledVariants_ from \\"react-native-styled-variants\\";
+
+const App = () => {
+  const _currentBreakpoint = _rnStyledVariants_.useCurrentBreakpoint();
+
+  const _theme = _rnStyledVariants_.useTheme().theme;
+
+  const _styleSheet = _rnStyledVariants__react.useMemo(() => _rnStyledVariants__styleSheet.create({
+    1: {
+      margin: _theme[\\"colors\\"][\\"blue\\"],
+      padding: _currentBreakpoint.resolveResponsiveValue({
+        \\"sm\\": 20,
+        \\"base\\": 10
+      })
+    }
+  }), [_theme, _currentBreakpoint.resolveResponsiveValue]);
+
+  return <View style={[_styleSheet[\\"1\\"], {
+    margin: 10
+  }]} />;
+};"
+`;
+
 exports[`test sx transform plugin creates memoized stylesheet with responsive breakpoint dependency 1`] = `
 "import * as _rnStyledVariants__react from \\"react\\";
 import { StyleSheet as _rnStyledVariants__styleSheet } from \\"react-native\\";

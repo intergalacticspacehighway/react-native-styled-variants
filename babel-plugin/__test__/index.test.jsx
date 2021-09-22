@@ -198,4 +198,24 @@ describe('test sx transform plugin', () => {
     const output = transformToStyles(code);
     expect(output).toMatchSnapshot();
   })
+
+  it("creates memoized stylesheet and updates existing style property", () => {
+    const code = `
+      const App = () => {
+        return <View sx={{margin: '$colors.blue', padding: {'@sm': 20, '@base': 10} }} style={{margin: 10}} />
+      }
+    `
+    const output = transformToStyles(code);
+    expect(output).toMatchSnapshot();
+  })
+
+  it("creates memoized stylesheet and updates existing style array property", () => {
+    const code = `
+      const App = () => {
+        return <View sx={{margin: '$colors.blue', padding: {'@sm': 20, '@base': 10} }} style={[{margin: 10}]} />
+      }
+    `
+    const output = transformToStyles(code);
+    expect(output).toMatchSnapshot();
+  })
 })
