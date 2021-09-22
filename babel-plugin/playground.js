@@ -30,26 +30,7 @@ function transformToStyles(code) {
 }
 
 transformToStyles(`
-
-function App() {
-  const renderFn = () => <View sx={{margin: 20}} />
-
-  return   <StyledText
-  uppercase
-  bold
-  sx={
-    pressed
-      ? {
-          color: Platform.select({
-            web: '$colors.white',
-            ios: '$colors.sky',
-          }),
-        }
-      : undefined
-  }
->
-  {mood[imageIndex]}
-  {renderFn()}
-</StyledText>
+const App = () => {
+  return <View sx={{margin: "$colors.blue", padding: 20}} />
 }
 `);

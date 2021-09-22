@@ -169,10 +169,30 @@ describe('test createVariant transform plugin', () => {
 });
 
 describe('test sx transform plugin', () => {
-  it("creates memoized stylesheet", () => {
+  it("creates memoized stylesheet without dependency array", () => {
     const code = `
       const App = () => {
-        return <View sx={{margin: 10}} />
+        return <View sx={{margin: 10, padding: 20}} />
+      }
+    `
+    const output = transformToStyles(code);
+    expect(output).toMatchSnapshot();
+  })
+
+  it("creates memoized stylesheet with theme dependency", () => {
+    const code = `
+      const App = () => {
+        return <View sx={{margin: '$colors.blue', padding: 20}} />
+      }
+    `
+    const output = transformToStyles(code);
+    expect(output).toMatchSnapshot();
+  })
+
+  it("creates memoized stylesheet with responsive breakpoint dependency", () => {
+    const code = `
+      const App = () => {
+        return <View sx={{margin: '$colors.blue', padding: {'@sm': 20, '@base': 10} }} />
       }
     `
     const output = transformToStyles(code);

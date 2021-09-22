@@ -96,6 +96,21 @@ let visitor = {
             (attr) => attr.node.name.name === styleAttributeName
           );
 
+          if (
+            t.isJSXExpressionContainer(sxAttribute.node.value) &&
+            t.isObjectExpression(sxAttribute.node.value.expression)
+          ) {
+            const properties = sxAttribute.get('value.expression.properties');
+            properties.forEach((p) => {
+              const value = p.get('value');
+              value.traverse({
+                Identifier() {
+                  containsVariables = true;
+                },
+              });
+            });
+          }
+
           sxAttribute.traverse({
             // Replace Theme tokens - '$colors.blue' => theme['colors']['blue']
             StringLiteral(path) {
@@ -138,16 +153,6 @@ let visitor = {
             t.isJSXExpressionContainer(sxAttribute.node.value) &&
             t.isObjectExpression(sxAttribute.node.value.expression)
           ) {
-            const properties = sxAttribute.get('value.expression.properties');
-            properties.forEach((p) => {
-              const value = p.get('value');
-              value.traverse({
-                Identifier() {
-                  containsVariables = true;
-                },
-              });
-            });
-
             const styleId = getStyleId();
 
             // If contains a variable, add inline object instead of creating stylesheet
