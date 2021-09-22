@@ -238,10 +238,13 @@ let visitor = {
     });
 
     if (!importsAdded && foundSXAttribute) {
-      // Adds import * as X from "package"
-      packageNameSpace = addNamespace(root, source, {
-        nameHint: PACKAGE_NAMESPACE_HINT,
-      }).name;
+      if (hasThemeToken || hasResponsiveToken) {
+        // Adds import * as X from "package"
+        packageNameSpace = addNamespace(root, source, {
+          nameHint: PACKAGE_NAMESPACE_HINT,
+        }).name;
+      }
+
       styleSheetNameSpace = addNamed(root, 'StyleSheet', 'react-native', {
         nameHint: PACKAGE_NAMESPACE_HINT + '_styleSheet',
       }).name;
