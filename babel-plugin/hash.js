@@ -1,3 +1,6 @@
+//  The unique id generation code is taken from styled component's babel plugin repo
+//  https://github.com/styled-components/babel-plugin-styled-components/blob/main/src/visitors/displayNameAndId.js
+
 const path = require('path');
 const fs = require('fs');
 const FILE_HASH = 'styled-variants-file-hash';
