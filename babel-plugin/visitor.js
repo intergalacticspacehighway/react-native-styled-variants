@@ -146,7 +146,9 @@ const visitor = {
           const variantName = variantProp.key.name;
           variantsIdentifier.push(variantName);
           variantProp.value.properties.forEach((nestedVariant) => {
-            const variantValueName = nestedVariant.key.name;
+            const variantValueName = t.isLiteral(nestedVariant.key)
+              ? nestedVariant.key.value
+              : nestedVariant.key.name;
 
             const variantHoverObjectProperty =
               nestedVariant.value.properties.filter((p) => {
