@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Pressable, Text, View, Platform } from 'react-native';
-import { Header } from '../components/Header';
+import { Header } from './components/Header';
 import { createVariant, ThemeProvider } from './theme';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Animated } from 'react-native';

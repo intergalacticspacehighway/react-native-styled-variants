@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Image } from 'react-native';
-import { createVariant } from '../AnimeApp/theme';
+import { createVariant } from '../theme';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const shadow = {

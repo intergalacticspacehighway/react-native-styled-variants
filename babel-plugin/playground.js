@@ -31,6 +31,13 @@ function transformToStyles(code) {
 
 transformToStyles(`
 const App = () => {
-  return <View sx={{margin: "$colors.blue", padding: 20}} />
+
+  const renderIcon = <View sx={{ color: '$colors.maroon.1' }} />;
+
+  return <>
+    {list.map(item => {
+      return <View sx={{margin: "$colors.blue", padding: {"@base" : 10, "@sm": 20} }} style={[{margin: 10}]} />
+    })}
+  </>
 }
 `);

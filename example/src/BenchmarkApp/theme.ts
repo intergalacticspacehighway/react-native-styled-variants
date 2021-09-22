@@ -1,3 +1,5 @@
+import { createTheme } from 'react-native-styled-variants';
+
 const palettes = {
   white: '#FFFFFF',
   black: '#000000',
@@ -344,6 +346,11 @@ export const breakpoints = {
   'xl': 1280,
   '2xl': 1536,
 };
+
+export const { createVariant, ThemeProvider, sx } = createTheme({
+  theme,
+  breakpoints,
+});
 
 export type ITheme = typeof theme;
 export type IBreakpoints = typeof breakpoints;

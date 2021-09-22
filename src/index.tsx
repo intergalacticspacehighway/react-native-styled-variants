@@ -260,7 +260,7 @@ export function createTheme<Theme, Breakpoints>({
   // The below is a noOp function, it'll be removed by the transpiler and replaced with React component
   function createVariant<Component extends React.ComponentType, DefinedStyles>(
     _Component: Component,
-    _styles: DefinedStyles & IStyles<Theme, Breakpoints, DefinedStyles>
+    _styles: DefinedStyles | (IStyles<Theme, Breakpoints, DefinedStyles> & {})
   ) {
     return {} as React.FC<
       GetVariantProps<DefinedStyles> & React.ComponentProps<Component>
