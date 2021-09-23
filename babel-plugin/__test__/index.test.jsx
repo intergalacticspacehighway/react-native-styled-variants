@@ -273,4 +273,14 @@ describe('test sx transform plugin', () => {
     const output = transformToStyles(code);
     expect(output).toMatchSnapshot();
   })
+
+  it("verifies sx and contentContainerStyle resolves to respective style props", () => {
+    const code = `
+      const App = () => {
+        return <View sx={{color: "pink"}} contentContainerSX={{margin: 10}} />
+      }
+    `
+    const output = transformToStyles(code);
+    expect(output).toMatchSnapshot();
+  })
 })
