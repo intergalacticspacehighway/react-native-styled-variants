@@ -1,3 +1,5 @@
+import { createTheme } from 'react-native-styled-variants';
+
 const palettes = {
   white: '#FFFFFF',
   black: '#000000',
@@ -309,6 +311,8 @@ export const darkColors = {
 };
 
 export const lightColors = {
+  primary: palettes.amber[500],
+
   button_hover: palettes.indigo[700],
   button_primary: palettes.indigo[600],
   cardBg: palettes.coolGray[50],
@@ -318,7 +322,6 @@ export const lightColors = {
   hover: palettes.blue[100],
   pressed: palettes.blue[200],
   pressed_secondary: palettes.blue[400],
-  primary: palettes.blue[600],
 };
 
 export const theme = {
@@ -343,3 +346,12 @@ export const breakpoints = {
   'xl': 1280,
   '2xl': 1536,
 };
+
+export const { createVariant, ThemeProvider, useTheme, useCurrentBreakpoint } =
+  createTheme({
+    theme,
+    breakpoints,
+  });
+
+export type ITheme = typeof theme;
+export type IBreakpoints = typeof breakpoints;

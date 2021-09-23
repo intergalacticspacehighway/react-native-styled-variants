@@ -1,14 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`test babel transform plugin generates styled component 1`] = `
+exports[`test createVariant transform plugin generates styled component 1`] = `
 "import * as _rnStyledVariants__react from \\"react\\";
 import * as _rnStyledVariants_ from \\"react-native-styled-variants\\";
 
-const StyledText = _rnStyledVariants__react.forwardRef(({style: propStyle, onPressIn: onPressInProp, onPressOut: onPressOutProp, onHoverIn: onHoverInProp , onHoverOut: onHoverOutProp, onFocus: onFocusProp, onBlur: onBlurProp, color, checked, size, ...props}, ref) => {
+const StyledText = _rnStyledVariants__react.forwardRef((props, ref) => {
+  const {style: propStyle, onPressIn: onPressInProp, onPressOut: onPressOutProp, onHoverIn: onHoverInProp , onHoverOut: onHoverOutProp, onFocus: onFocusProp, onBlur: onBlurProp, color, checked, size, ...rest} = props;;
   _rnStyledVariants_.useCurrentBreakpoint();
   _rnStyledVariants_.useTheme();
 
-  const styleSheet = _rnStyledVariants_.useStyleSheet(1, ({
+  const styleSheet = _rnStyledVariants_.useStyleSheet(\\"test\\", ({
     theme,
     currentBreakpoint,
     getClosestResponsiveValue
@@ -46,18 +47,19 @@ const StyledText = _rnStyledVariants__react.forwardRef(({style: propStyle, onPre
     return newStyle;
   }, [styleSheet, color, checked, size, propStyle]);
 
-  return <Text onHoverIn={onHoverInProp} onHoverOut={onHoverOutProp} onPressIn={onPressInProp} onPressOut={onPressOutProp} onFocus={onFocusProp} onBlur={onBlurProp} ref={ref} style={style} {...props} />;
+  return <Text onHoverIn={onHoverInProp} onHoverOut={onHoverOutProp} onPressIn={onPressInProp} onPressOut={onPressOutProp} onFocus={onFocusProp} onBlur={onBlurProp} ref={ref} style={style} {...rest} />;
 });"
 `;
 
-exports[`test babel transform plugin generates styled component for baseStyle 1`] = `
+exports[`test createVariant transform plugin generates styled component for baseStyle 1`] = `
 "import * as _rnStyledVariants__react from \\"react\\";
 import * as _rnStyledVariants_ from \\"react-native-styled-variants\\";
 
-const StyledPressable = _rnStyledVariants__react.forwardRef(({style: propStyle, onPressIn: onPressInProp, onPressOut: onPressOutProp, onHoverIn: onHoverInProp , onHoverOut: onHoverOutProp, onFocus: onFocusProp, onBlur: onBlurProp,  ...props}, ref) => {
+const StyledPressable = _rnStyledVariants__react.forwardRef((props, ref) => {
+  const {style: propStyle, onPressIn: onPressInProp, onPressOut: onPressOutProp, onHoverIn: onHoverInProp , onHoverOut: onHoverOutProp, onFocus: onFocusProp, onBlur: onBlurProp,  ...rest} = props;;
   _rnStyledVariants_.useTheme();
 
-  const styleSheet = _rnStyledVariants_.useStyleSheet(2, ({
+  const styleSheet = _rnStyledVariants_.useStyleSheet(\\"test\\", ({
     theme,
     currentBreakpoint,
     getClosestResponsiveValue
@@ -73,19 +75,20 @@ const StyledPressable = _rnStyledVariants__react.forwardRef(({style: propStyle, 
     return newStyle;
   }, [styleSheet, propStyle]);
 
-  return <Pressable onHoverIn={onHoverInProp} onHoverOut={onHoverOutProp} onPressIn={onPressInProp} onPressOut={onPressOutProp} onFocus={onFocusProp} onBlur={onBlurProp} ref={ref} style={style} {...props} />;
+  return <Pressable onHoverIn={onHoverInProp} onHoverOut={onHoverOutProp} onPressIn={onPressInProp} onPressOut={onPressOutProp} onFocus={onFocusProp} onBlur={onBlurProp} ref={ref} style={style} {...rest} />;
 });"
 `;
 
-exports[`test babel transform plugin verifies base focus styles 1`] = `
+exports[`test createVariant transform plugin verifies base focus styles 1`] = `
 "import * as _rnStyledVariants__react from \\"react\\";
 import * as _rnStyledVariants_ from \\"react-native-styled-variants\\";
 
-const StyledPressable = _rnStyledVariants__react.forwardRef(({style: propStyle, onPressIn: onPressInProp, onPressOut: onPressOutProp, onHoverIn: onHoverInProp , onHoverOut: onHoverOutProp, onFocus: onFocusProp, onBlur: onBlurProp,  ...props}, ref) => {
+const StyledPressable = _rnStyledVariants__react.forwardRef((props, ref) => {
+  const {style: propStyle, onPressIn: onPressInProp, onPressOut: onPressOutProp, onHoverIn: onHoverInProp , onHoverOut: onHoverOutProp, onFocus: onFocusProp, onBlur: onBlurProp,  ...rest} = props;;
   _rnStyledVariants_.useTheme();
   const {onFocus, onBlur, isFocused} = _rnStyledVariants_.useFocus({onFocus: onFocusProp, onBlur: onBlurProp});
 
-  const styleSheet = _rnStyledVariants_.useStyleSheet(6, ({
+  const styleSheet = _rnStyledVariants_.useStyleSheet(\\"test\\", ({
     theme,
     currentBreakpoint,
     getClosestResponsiveValue
@@ -104,19 +107,20 @@ const StyledPressable = _rnStyledVariants__react.forwardRef(({style: propStyle, 
     return newStyle;
   }, [styleSheet, isFocused, propStyle]);
 
-  return <Pressable onHoverIn={onHoverInProp} onHoverOut={onHoverOutProp} onPressIn={onPressInProp} onPressOut={onPressOutProp} onFocus={onFocus} onBlur={onBlur} ref={ref} style={style} {...props} />;
+  return <Pressable onHoverIn={onHoverInProp} onHoverOut={onHoverOutProp} onPressIn={onPressInProp} onPressOut={onPressOutProp} onFocus={onFocus} onBlur={onBlur} ref={ref} style={style} {...rest} />;
 });"
 `;
 
-exports[`test babel transform plugin verifies base focus styles 2`] = `
+exports[`test createVariant transform plugin verifies base focus styles 2`] = `
 "import * as _rnStyledVariants__react from \\"react\\";
 import * as _rnStyledVariants_ from \\"react-native-styled-variants\\";
 
-const StyledPressable = _rnStyledVariants__react.forwardRef(({style: propStyle, onPressIn: onPressInProp, onPressOut: onPressOutProp, onHoverIn: onHoverInProp , onHoverOut: onHoverOutProp, onFocus: onFocusProp, onBlur: onBlurProp, checked, ...props}, ref) => {
+const StyledPressable = _rnStyledVariants__react.forwardRef((props, ref) => {
+  const {style: propStyle, onPressIn: onPressInProp, onPressOut: onPressOutProp, onHoverIn: onHoverInProp , onHoverOut: onHoverOutProp, onFocus: onFocusProp, onBlur: onBlurProp, checked, ...rest} = props;;
   _rnStyledVariants_.useTheme();
   const {onFocus, onBlur, isFocused} = _rnStyledVariants_.useFocus({onFocus: onFocusProp, onBlur: onBlurProp});
 
-  const styleSheet = _rnStyledVariants_.useStyleSheet(7, ({
+  const styleSheet = _rnStyledVariants_.useStyleSheet(\\"test\\", ({
     theme,
     currentBreakpoint,
     getClosestResponsiveValue
@@ -141,19 +145,20 @@ const StyledPressable = _rnStyledVariants__react.forwardRef(({style: propStyle, 
     return newStyle;
   }, [styleSheet, isFocused, checked, propStyle]);
 
-  return <Pressable onHoverIn={onHoverInProp} onHoverOut={onHoverOutProp} onPressIn={onPressInProp} onPressOut={onPressOutProp} onFocus={onFocus} onBlur={onBlur} ref={ref} style={style} {...props} />;
+  return <Pressable onHoverIn={onHoverInProp} onHoverOut={onHoverOutProp} onPressIn={onPressInProp} onPressOut={onPressOutProp} onFocus={onFocus} onBlur={onBlur} ref={ref} style={style} {...rest} />;
 });"
 `;
 
-exports[`test babel transform plugin verifies base hover styles 1`] = `
+exports[`test createVariant transform plugin verifies base hover styles 1`] = `
 "import * as _rnStyledVariants__react from \\"react\\";
 import * as _rnStyledVariants_ from \\"react-native-styled-variants\\";
 
-const StyledPressable = _rnStyledVariants__react.forwardRef(({style: propStyle, onPressIn: onPressInProp, onPressOut: onPressOutProp, onHoverIn: onHoverInProp , onHoverOut: onHoverOutProp, onFocus: onFocusProp, onBlur: onBlurProp, color, ...props}, ref) => {
+const StyledPressable = _rnStyledVariants__react.forwardRef((props, ref) => {
+  const {style: propStyle, onPressIn: onPressInProp, onPressOut: onPressOutProp, onHoverIn: onHoverInProp , onHoverOut: onHoverOutProp, onFocus: onFocusProp, onBlur: onBlurProp, color, ...rest} = props;;
   _rnStyledVariants_.useTheme();
   const {onHoverIn, onHoverOut, isHovered} = _rnStyledVariants_.useHover({onHoverIn: onHoverInProp, onHoverOut: onHoverOutProp});
 
-  const styleSheet = _rnStyledVariants_.useStyleSheet(3, ({
+  const styleSheet = _rnStyledVariants_.useStyleSheet(\\"test\\", ({
     theme,
     currentBreakpoint,
     getClosestResponsiveValue
@@ -177,19 +182,20 @@ const StyledPressable = _rnStyledVariants__react.forwardRef(({style: propStyle, 
     return newStyle;
   }, [styleSheet, isHovered, color, propStyle]);
 
-  return <Pressable onHoverIn={onHoverIn} onHoverOut={onHoverOut} onPressIn={onPressInProp} onPressOut={onPressOutProp} onFocus={onFocusProp} onBlur={onBlurProp} ref={ref} style={style} {...props} />;
+  return <Pressable onHoverIn={onHoverIn} onHoverOut={onHoverOut} onPressIn={onPressInProp} onPressOut={onPressOutProp} onFocus={onFocusProp} onBlur={onBlurProp} ref={ref} style={style} {...rest} />;
 });"
 `;
 
-exports[`test babel transform plugin verifies base pressed styles 1`] = `
+exports[`test createVariant transform plugin verifies base pressed styles 1`] = `
 "import * as _rnStyledVariants__react from \\"react\\";
 import * as _rnStyledVariants_ from \\"react-native-styled-variants\\";
 
-const StyledPressable = _rnStyledVariants__react.forwardRef(({style: propStyle, onPressIn: onPressInProp, onPressOut: onPressOutProp, onHoverIn: onHoverInProp , onHoverOut: onHoverOutProp, onFocus: onFocusProp, onBlur: onBlurProp,  ...props}, ref) => {
+const StyledPressable = _rnStyledVariants__react.forwardRef((props, ref) => {
+  const {style: propStyle, onPressIn: onPressInProp, onPressOut: onPressOutProp, onHoverIn: onHoverInProp , onHoverOut: onHoverOutProp, onFocus: onFocusProp, onBlur: onBlurProp,  ...rest} = props;;
   _rnStyledVariants_.useTheme();
   const {onPressIn, onPressOut, isPressed} = _rnStyledVariants_.usePress({onPressIn: onPressInProp, onPressOut: onPressOutProp});
 
-  const styleSheet = _rnStyledVariants_.useStyleSheet(4, ({
+  const styleSheet = _rnStyledVariants_.useStyleSheet(\\"test\\", ({
     theme,
     currentBreakpoint,
     getClosestResponsiveValue
@@ -208,19 +214,20 @@ const StyledPressable = _rnStyledVariants__react.forwardRef(({style: propStyle, 
     return newStyle;
   }, [styleSheet, isPressed, propStyle]);
 
-  return <Pressable onHoverIn={onHoverInProp} onHoverOut={onHoverOutProp} onPressIn={onPressIn} onPressOut={onPressOut} onFocus={onFocusProp} onBlur={onBlurProp} ref={ref} style={style} {...props} />;
+  return <Pressable onHoverIn={onHoverInProp} onHoverOut={onHoverOutProp} onPressIn={onPressIn} onPressOut={onPressOut} onFocus={onFocusProp} onBlur={onBlurProp} ref={ref} style={style} {...rest} />;
 });"
 `;
 
-exports[`test babel transform plugin verifies base/variants pressed styles 1`] = `
+exports[`test createVariant transform plugin verifies base/variants pressed styles 1`] = `
 "import * as _rnStyledVariants__react from \\"react\\";
 import * as _rnStyledVariants_ from \\"react-native-styled-variants\\";
 
-const StyledPressable = _rnStyledVariants__react.forwardRef(({style: propStyle, onPressIn: onPressInProp, onPressOut: onPressOutProp, onHoverIn: onHoverInProp , onHoverOut: onHoverOutProp, onFocus: onFocusProp, onBlur: onBlurProp, checked, ...props}, ref) => {
+const StyledPressable = _rnStyledVariants__react.forwardRef((props, ref) => {
+  const {style: propStyle, onPressIn: onPressInProp, onPressOut: onPressOutProp, onHoverIn: onHoverInProp , onHoverOut: onHoverOutProp, onFocus: onFocusProp, onBlur: onBlurProp, checked, ...rest} = props;;
   _rnStyledVariants_.useTheme();
   const {onPressIn, onPressOut, isPressed} = _rnStyledVariants_.usePress({onPressIn: onPressInProp, onPressOut: onPressOutProp});
 
-  const styleSheet = _rnStyledVariants_.useStyleSheet(5, ({
+  const styleSheet = _rnStyledVariants_.useStyleSheet(\\"test\\", ({
     theme,
     currentBreakpoint,
     getClosestResponsiveValue
@@ -245,6 +252,218 @@ const StyledPressable = _rnStyledVariants__react.forwardRef(({style: propStyle, 
     return newStyle;
   }, [styleSheet, isPressed, checked, propStyle]);
 
-  return <Pressable onHoverIn={onHoverInProp} onHoverOut={onHoverOutProp} onPressIn={onPressIn} onPressOut={onPressOut} onFocus={onFocusProp} onBlur={onBlurProp} ref={ref} style={style} {...props} />;
+  return <Pressable onHoverIn={onHoverInProp} onHoverOut={onHoverOutProp} onPressIn={onPressIn} onPressOut={onPressOut} onFocus={onFocusProp} onBlur={onBlurProp} ref={ref} style={style} {...rest} />;
 });"
+`;
+
+exports[`test sx transform plugin adds conditional sx property in style 1`] = `
+"import * as _rnStyledVariants__react from \\"react\\";
+import { StyleSheet as _rnStyledVariants__styleSheet } from \\"react-native\\";
+import * as _rnStyledVariants_ from \\"react-native-styled-variants\\";
+
+const App = () => {
+  const _theme = _rnStyledVariants_.useTheme().theme;
+
+  const pressed = false;
+  return <View style={[pressed ? {
+    backgroundColor: _theme[\\"colors\\"][\\"blue\\"]
+  } : {}, {
+    margin: 10
+  }]} />;
+};"
+`;
+
+exports[`test sx transform plugin creates memoized stylesheet and updates existing style array property 1`] = `
+"import * as _rnStyledVariants__react from \\"react\\";
+import { StyleSheet as _rnStyledVariants__styleSheet } from \\"react-native\\";
+import * as _rnStyledVariants_ from \\"react-native-styled-variants\\";
+
+const App = () => {
+  const _currentBreakpoint = _rnStyledVariants_.useCurrentBreakpoint();
+
+  const _theme = _rnStyledVariants_.useTheme().theme;
+
+  const _styleSheet = _rnStyledVariants__react.useMemo(() => _rnStyledVariants__styleSheet.create({
+    1: {
+      margin: _theme[\\"colors\\"][\\"blue\\"],
+      padding: _currentBreakpoint.resolveResponsiveValue({
+        \\"sm\\": 20,
+        \\"base\\": 10
+      })
+    }
+  }), [_theme, _currentBreakpoint.resolveResponsiveValue]);
+
+  return <View style={[_styleSheet[\\"1\\"], {
+    margin: 10
+  }]} />;
+};"
+`;
+
+exports[`test sx transform plugin creates memoized stylesheet and updates existing style property 1`] = `
+"import * as _rnStyledVariants__react from \\"react\\";
+import { StyleSheet as _rnStyledVariants__styleSheet } from \\"react-native\\";
+import * as _rnStyledVariants_ from \\"react-native-styled-variants\\";
+
+const App = () => {
+  const _currentBreakpoint = _rnStyledVariants_.useCurrentBreakpoint();
+
+  const _theme = _rnStyledVariants_.useTheme().theme;
+
+  const _styleSheet = _rnStyledVariants__react.useMemo(() => _rnStyledVariants__styleSheet.create({
+    1: {
+      margin: _theme[\\"colors\\"][\\"blue\\"],
+      padding: _currentBreakpoint.resolveResponsiveValue({
+        \\"sm\\": 20,
+        \\"base\\": 10
+      })
+    }
+  }), [_theme, _currentBreakpoint.resolveResponsiveValue]);
+
+  return <View style={[_styleSheet[\\"1\\"], {
+    margin: 10
+  }]} />;
+};"
+`;
+
+exports[`test sx transform plugin creates memoized stylesheet with responsive breakpoint dependency 1`] = `
+"import * as _rnStyledVariants__react from \\"react\\";
+import { StyleSheet as _rnStyledVariants__styleSheet } from \\"react-native\\";
+import * as _rnStyledVariants_ from \\"react-native-styled-variants\\";
+
+const App = () => {
+  const _currentBreakpoint = _rnStyledVariants_.useCurrentBreakpoint();
+
+  const _theme = _rnStyledVariants_.useTheme().theme;
+
+  const _styleSheet = _rnStyledVariants__react.useMemo(() => _rnStyledVariants__styleSheet.create({
+    1: {
+      margin: _theme[\\"colors\\"][\\"blue\\"],
+      padding: _currentBreakpoint.resolveResponsiveValue({
+        \\"sm\\": 20,
+        \\"base\\": 10
+      })
+    }
+  }), [_theme, _currentBreakpoint.resolveResponsiveValue]);
+
+  return <View style={_styleSheet[\\"1\\"]} />;
+};"
+`;
+
+exports[`test sx transform plugin creates memoized stylesheet with theme dependency 1`] = `
+"import * as _rnStyledVariants__react from \\"react\\";
+import { StyleSheet as _rnStyledVariants__styleSheet } from \\"react-native\\";
+import * as _rnStyledVariants_ from \\"react-native-styled-variants\\";
+
+const App = () => {
+  const _theme = _rnStyledVariants_.useTheme().theme;
+
+  const _styleSheet = _rnStyledVariants__react.useMemo(() => _rnStyledVariants__styleSheet.create({
+    1: {
+      margin: _theme[\\"colors\\"][\\"blue\\"],
+      padding: 20
+    }
+  }), [_theme]);
+
+  return <View style={_styleSheet[\\"1\\"]} />;
+};"
+`;
+
+exports[`test sx transform plugin creates memoized stylesheet without dependency array 1`] = `
+"import * as _rnStyledVariants__react from \\"react\\";
+import { StyleSheet as _rnStyledVariants__styleSheet } from \\"react-native\\";
+
+const App = () => {
+  const _styleSheet = _rnStyledVariants__react.useMemo(() => _rnStyledVariants__styleSheet.create({
+    1: {
+      margin: 10,
+      padding: 20
+    }
+  }), []);
+
+  return <View style={_styleSheet[\\"1\\"]} />;
+};"
+`;
+
+exports[`test sx transform plugin verifies contentContainerSX prop gets appended to contentContainerStyle prop 1`] = `
+"import * as _rnStyledVariants__react from \\"react\\";
+import { StyleSheet as _rnStyledVariants__styleSheet } from \\"react-native\\";
+import * as _rnStyledVariants_ from \\"react-native-styled-variants\\";
+
+const App = () => {
+  const _theme = _rnStyledVariants_.useTheme().theme;
+
+  const _styleSheet = _rnStyledVariants__react.useMemo(() => _rnStyledVariants__styleSheet.create({
+    1: {
+      backgroundColor: _theme[\\"colors\\"][\\"blue\\"]
+    }
+  }), [_theme]);
+
+  const pressed = false;
+  return <ScrollView style={[{
+    margin: 10
+  }]} contentContainerStyle={_styleSheet[\\"1\\"]} />;
+};"
+`;
+
+exports[`test sx transform plugin verifies sx and contentContainerStyle resolves to respective style props 1`] = `
+"import * as _rnStyledVariants__react from \\"react\\";
+import { StyleSheet as _rnStyledVariants__styleSheet } from \\"react-native\\";
+
+const App = () => {
+  const _styleSheet = _rnStyledVariants__react.useMemo(() => _rnStyledVariants__styleSheet.create({
+    1: {
+      color: \\"pink\\"
+    },
+    2: {
+      margin: 10
+    }
+  }), []);
+
+  return <View style={_styleSheet[\\"1\\"]} contentContainerStyle={_styleSheet[\\"2\\"]} />;
+};"
+`;
+
+exports[`test sx transform plugin verifies sx is added inline when it contains variable - conditional 1`] = `
+"import * as _rnStyledVariants__react from \\"react\\";
+import { StyleSheet as _rnStyledVariants__styleSheet } from \\"react-native\\";
+
+const App = () => {
+  const a = 10;
+  return <View style={[a ? {
+    color: \\"black\\"
+  } : {}, {
+    margin: 10
+  }]} />;
+};"
+`;
+
+exports[`test sx transform plugin verifies sx is added inline when it contains variable 1`] = `
+"import * as _rnStyledVariants__react from \\"react\\";
+import { StyleSheet as _rnStyledVariants__styleSheet } from \\"react-native\\";
+
+const App = () => {
+  const a = 10;
+  return <View style={[{
+    padding: a
+  }, {
+    margin: 10
+  }]} />;
+};"
+`;
+
+exports[`test sx transform plugin verifies sx is added inline when it contains variable in responsive value 1`] = `
+"import * as _rnStyledVariants__react from \\"react\\";
+import { StyleSheet as _rnStyledVariants__styleSheet } from \\"react-native\\";
+import * as _rnStyledVariants_ from \\"react-native-styled-variants\\";
+
+const App = () => {
+  const _currentBreakpoint = _rnStyledVariants_.useCurrentBreakpoint();
+
+  const a = 'black';
+  return <View style={{
+    color: _currentBreakpoint.resolveResponsiveValue({
+      \\"sm\\": a
+    })
+  }} />;
+};"
 `;

@@ -28,31 +28,33 @@ export function getClosestBreakpoint(breakpoints: any, windowWidth: number) {
   }
   return index;
 }
-
 export const getCurrentBreakpoint = (
   windowWidth,
-  breakpointsArray,
+  breakpointsSortedKeys,
   breakpoints
 ) => {
-  const breakpoint = getClosestBreakpoint(breakpoints, windowWidth);
-  return breakpointsArray[breakpoint];
+  const breakpoint = getClosestBreakpoint(
+    breakpointsSortedKeys.map((key) => breakpoints[key]),
+    windowWidth
+  );
+  return breakpointsSortedKeys[breakpoint];
 };
 
 export const getClosestResponsiveValue = (
   values,
   currentBreakpoint,
-  breakpointsArray
+  breakpointsSortedKeys
 ) => {
   let val;
   if (currentBreakpoint in values) {
     val = currentBreakpoint;
   } else {
-    let currentBreakpointIndex = breakpointsArray.findIndex(
+    let currentBreakpointIndex = breakpointsSortedKeys.findIndex(
       (v) => v === currentBreakpoint
     );
     for (let i = currentBreakpointIndex; i >= 0; i--) {
-      if (breakpointsArray[i] in values) {
-        val = breakpointsArray[i];
+      if (breakpointsSortedKeys[i] in values) {
+        val = breakpointsSortedKeys[i];
         break;
       }
     }

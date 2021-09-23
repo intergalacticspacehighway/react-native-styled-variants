@@ -1,12 +1,7 @@
 const template = require('@babel/template').default;
 const t = require('@babel/types');
 const { addNamespace } = require('@babel/helper-module-imports');
-
-let count = 0;
-const getKey = () => {
-  count++;
-  return count.toString();
-};
+const { getComponentId } = require('./hash');
 
 const source = 'react-native-styled-variants';
 
@@ -22,8 +17,8 @@ const visitor = {
     importsAdded = false;
   },
   // Traverse for call expression beginning with `styled()`
-  CallExpression(path) {
-    if (path.node.callee.name === 'styled') {
+  CallExpression(path, state) {
+    if (path.node.callee.name === 'createVariant') {
       if (!importsAdded) {
         // Adds import * as X from "package"
         packageNameSpace = addNamespace(root, source, {
@@ -56,9 +51,15 @@ const visitor = {
         (prop) => prop.key.name === 'variants'
       );
 
+      // Default variants object
+      const defaultVariants = styleObjectExpression.properties.find(
+        (prop) => prop.key.name === 'defaultVariants'
+      );
+
       // Base style properties
       const baseStyleProperties = styleObjectExpression.properties
         .filter((prop) => prop.key.name !== 'variants')
+        .filter((p) => p.key.name !== 'defaultVariants')
         .filter((p) => p.key.name !== '_hover')
         .filter((p) => p.key.name !== '_focus')
         .filter((p) => p.key.name !== '_pressed');
@@ -145,7 +146,9 @@ const visitor = {
           const variantName = variantProp.key.name;
           variantsIdentifier.push(variantName);
           variantProp.value.properties.forEach((nestedVariant) => {
-            const variantValueName = nestedVariant.key.name;
+            const variantValueName = t.isLiteral(nestedVariant.key)
+              ? nestedVariant.key.value
+              : nestedVariant.key.name;
 
             const variantHoverObjectProperty =
               nestedVariant.value.properties.filter((p) => {
@@ -288,7 +291,9 @@ const visitor = {
       // Component template
       const componentTemplate = template(
         `
-          ${reactNameSpace}.forwardRef((VARIANTS_PROPS, ref) => {
+          ${reactNameSpace}.forwardRef((props, ref) => {
+
+            COMPONENT_PROPS
             
             BREAKPOINT_HOOK
 
@@ -301,7 +306,7 @@ const visitor = {
             FOCUS_HOOK
             
             
-           const styleSheet = ${packageNameSpace}.useStyleSheet(KEY, ({theme, currentBreakpoint, getClosestResponsiveValue}) => STYLE_OBJECT, USE_STYLE_SHEET_DEPS);
+           const styleSheet = ${packageNameSpace}.useStyleSheet("KEY", ({theme, currentBreakpoint, getClosestResponsiveValue}) => STYLE_OBJECT, USE_STYLE_SHEET_DEPS);
            
           
             const style = ${reactNameSpace}.useMemo(() => {
@@ -309,7 +314,7 @@ const visitor = {
 
               return newStyle;
             }, STYLE_MEMO_DEPS);
-          
+
             return <COMP ${
               hasHoverStyles
                 ? 'onHoverIn={onHoverIn} onHoverOut={onHoverOut}'
@@ -328,7 +333,7 @@ const visitor = {
                 : 'onFocus={onFocusProp} onBlur={onBlurProp}'
             }
 
-            ref={ref} style={style} {...props} />;
+            ref={ref} style={style} {...rest} />;
           })
         `,
         {
@@ -336,7 +341,7 @@ const visitor = {
         }
       );
 
-      const KEY = getKey();
+      const KEY = getComponentId(state);
       const variantStyles = variantsIdentifier
         .map(
           (v) => `
@@ -365,6 +370,29 @@ const visitor = {
 
       const variantStyleMemoDeps = variantsIdentifier.join(', ');
 
+      let variantProps = '';
+      if (hasVariants) {
+        if (defaultVariants && t.isObjectExpression(defaultVariants.value)) {
+          variantProps =
+            variantsIdentifier
+              .map((v) => {
+                let property = defaultVariants.value.properties.find(
+                  (p) => p.key.name === v
+                );
+                if (property) {
+                  let value = property.value.value;
+                  value = typeof value === 'string' ? `"${value}"` : value;
+                  return `${v}=${value}`;
+                } else {
+                  return v;
+                }
+              })
+              .join(', ') + ',';
+        } else {
+          variantProps = variantsIdentifier.join(', ') + ',';
+        }
+      }
+
       const substitutions = {
         KEY,
         HOVER_HOOK: '',
@@ -376,9 +404,7 @@ const visitor = {
         THEME_HOOK: '',
         STYLE_MEMO_DEPS: '',
         COMP: t.jSXIdentifier(componentIdentifier.name),
-        VARIANTS_PROPS: `{style: propStyle, onPressIn: onPressInProp, onPressOut: onPressOutProp, onHoverIn: onHoverInProp , onHoverOut: onHoverOutProp, onFocus: onFocusProp, onBlur: onBlurProp, ${
-          hasVariants ? variantsIdentifier.join(', ') + ',' : ''
-        } ...props}`,
+        COMPONENT_PROPS: `const {style: propStyle, onPressIn: onPressInProp, onPressOut: onPressOutProp, onHoverIn: onHoverInProp , onHoverOut: onHoverOutProp, onFocus: onFocusProp, onBlur: onBlurProp, ${variantProps} ...rest} = props;`,
 
         STYLE_OBJECT: styleObjectExpression,
       };

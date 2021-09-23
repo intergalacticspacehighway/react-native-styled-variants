@@ -1,20 +1,22 @@
 import React, { ReactNode, useCallback } from 'react';
 import { Dimensions, StyleSheet } from 'react-native';
-import type { IStyles, IThemeProviderProps } from './types';
+import type {
+  GetVariantProps,
+  IStyles,
+  IThemeProviderProps,
+  RNStyles,
+} from './types';
 import {
   useControlledState,
   getCurrentBreakpoint,
   getClosestResponsiveValue,
 } from './utils';
 
-// Todo: Improve typings!
-// type IStyleFn = ({}) => any;
-
 const ThemeProviderImpl = (props: IThemeProviderProps) => {
   const [theme, _setTheme] = useControlledState(props.theme);
   const [breakpoints] = useControlledState(props.breakpoints);
 
-  const breakpointsArray = React.useMemo(() => {
+  const breakpointsSortedKeys = React.useMemo(() => {
     return Object.entries(breakpoints)
       .sort(([, a], [, b]) => a - b)
       .map((v) => v[0]);
@@ -24,7 +26,7 @@ const ThemeProviderImpl = (props: IThemeProviderProps) => {
     props.currentBreakpoint ??
       getCurrentBreakpoint(
         Dimensions.get('window').width,
-        breakpointsArray,
+        breakpointsSortedKeys,
         breakpoints
       )
   );
@@ -49,7 +51,7 @@ const ThemeProviderImpl = (props: IThemeProviderProps) => {
             getClosestResponsiveValue(
               values,
               currentBreakpoint,
-              breakpointsArray
+              breakpointsSortedKeys
             ),
         })
       );
@@ -77,7 +79,7 @@ const ThemeProviderImpl = (props: IThemeProviderProps) => {
               getClosestResponsiveValue(
                 values,
                 currentBreakpoint,
-                breakpointsArray
+                breakpointsSortedKeys
               ),
           })
         );
@@ -86,7 +88,7 @@ const ThemeProviderImpl = (props: IThemeProviderProps) => {
     },
     [
       _setTheme,
-      breakpointsArray,
+      breakpointsSortedKeys,
       currentBreakpoint,
       styleSheets,
       themeDependentStyleSheetIds,
@@ -105,7 +107,7 @@ const ThemeProviderImpl = (props: IThemeProviderProps) => {
               getClosestResponsiveValue(
                 values,
                 newBreakpoint,
-                breakpointsArray
+                breakpointsSortedKeys
               ),
           })
         );
@@ -115,18 +117,26 @@ const ThemeProviderImpl = (props: IThemeProviderProps) => {
     [
       _setCurrentBreakpoint,
       breakpointDependentStyleSheetIds,
-      breakpointsArray,
+      breakpointsSortedKeys,
       styleSheets,
       theme,
     ]
   );
+
+  const resolveResponsiveValue = (values: any) => {
+    return getClosestResponsiveValue(
+      values,
+      currentBreakpoint,
+      breakpointsSortedKeys
+    );
+  };
 
   React.useEffect(() => {
     function updateCurrentBreakpoint(dimensions: any) {
       setCurrentBreakpoint(
         getCurrentBreakpoint(
           dimensions.window.width,
-          breakpointsArray,
+          breakpointsSortedKeys,
           breakpoints
         )
       );
@@ -135,7 +145,7 @@ const ThemeProviderImpl = (props: IThemeProviderProps) => {
     return () => {
       Dimensions.removeEventListener('change', updateCurrentBreakpoint);
     };
-  }, [setCurrentBreakpoint, breakpointsArray, breakpoints]);
+  }, [setCurrentBreakpoint, breakpointsSortedKeys, breakpoints]);
 
   return (
     <ThemeContext.Provider
@@ -147,6 +157,7 @@ const ThemeProviderImpl = (props: IThemeProviderProps) => {
         currentBreakpoint,
         generateStyleSheet,
         breakpoints,
+        resolveResponsiveValue,
       }}
     />
   );
@@ -159,7 +170,10 @@ export const useTheme = () => {
 
 export const useCurrentBreakpoint = () => {
   const style = React.useContext(ThemeContext);
-  return style.currentBreakpoint;
+  return {
+    currentBreakpoint: style.currentBreakpoint,
+    resolveResponsiveValue: style.resolveResponsiveValue,
+  };
 };
 
 export const useStyleSheet = (id: any, styleFn: any, dependsUpon: string[]) => {
@@ -168,12 +182,13 @@ export const useStyleSheet = (id: any, styleFn: any, dependsUpon: string[]) => {
 };
 
 const ThemeContext = React.createContext({
-  theme: null,
+  theme: {},
   currentBreakpoint: null,
   setTheme: (_theme: any) => {},
   setCurrentBreakpoint: (_currentBreakpoint: any) => {},
   generateStyleSheet: (_id: any, _styleFn: any, _dependsUpon: any) => {},
   breakpoints: {},
+  resolveResponsiveValue: (_values: any) => {},
 });
 
 export const useHover = ({ onHoverIn, onHoverOut }: any) => {
@@ -235,21 +250,43 @@ export function createTheme<Theme, Breakpoints>({
     return (
       <ThemeProviderImpl
         theme={theme}
-        // Todo - improve TS support
-        //@ts-ignore
         breakpoints={breakpoints}
         children={children}
       />
     );
   }
-  // The below is a noOp function, it'll be removed by the transpiler
-  // Todo - improve TS support
-  function styled<Component>(
+  // The below is a noOp function, it'll be removed by the transpiler and replaced with React component
+  function createVariant<Component extends React.ComponentType, DefinedStyles>(
     _Component: Component,
-    _styles: IStyles<Theme, Breakpoints>
+    _styles: DefinedStyles | (IStyles<Theme, Breakpoints, DefinedStyles> & {})
   ) {
-    return {} as any;
+    return {} as React.FC<
+      GetVariantProps<DefinedStyles> & React.ComponentProps<Component>
+    >;
   }
 
-  return { ThemeProvider, styled };
+  function useTheme() {
+    const style = React.useContext(ThemeContext);
+    return { theme: style.theme, setTheme: style.setTheme } as {
+      theme: Theme;
+      setTheme: (theme: Theme) => void;
+    };
+  }
+
+  function useCurrentBreakpoint() {
+    const style = React.useContext(ThemeContext);
+    return {
+      currentBreakpoint: style.currentBreakpoint,
+      resolveResponsiveValue: style.resolveResponsiveValue,
+    } as unknown as {
+      currentBreakpoint: keyof Breakpoints;
+      resolveResponsiveValue: (values: {
+        [Key in keyof Breakpoints]?: unknown;
+      }) => unknown;
+    };
+  }
+
+  return { ThemeProvider, createVariant, useTheme, useCurrentBreakpoint };
 }
+
+export type { RNStyles };
