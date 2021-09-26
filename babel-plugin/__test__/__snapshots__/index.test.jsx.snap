@@ -273,6 +273,24 @@ const App = () => {
 };"
 `;
 
+exports[`test sx transform plugin arrow function short hand component definition 1`] = `
+"import * as _rnStyledVariants__react from \\"react\\";
+import { StyleSheet as _rnStyledVariants__styleSheet } from \\"react-native\\";
+
+const App = () => {
+  const _styleSheet = _rnStyledVariants__react.useMemo(() => _rnStyledVariants__styleSheet.create({
+    1: {
+      color: \\"pink\\"
+    },
+    2: {
+      margin: 10
+    }
+  }), []);
+
+  return <View style={_styleSheet[\\"1\\"]} contentContainerStyle={_styleSheet[\\"2\\"]} />;
+};"
+`;
+
 exports[`test sx transform plugin creates memoized stylesheet and updates existing style array property 1`] = `
 "import * as _rnStyledVariants__react from \\"react\\";
 import { StyleSheet as _rnStyledVariants__styleSheet } from \\"react-native\\";

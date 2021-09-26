@@ -89,6 +89,17 @@ let visitor = {
             attr.node.name.name === 'contentContainerSX'
         );
 
+        // If const App = (props) => <View sx={{color: "red"}} />
+        // convert it to
+        // const App = (props) => {
+        // return <View sx={{color: "red"}} />
+        // }
+        if (sxAttributes.length > 0 && t.isJSXElement(path.node.body)) {
+          path
+            .get('body')
+            .replaceWith(t.blockStatement([t.returnStatement(path.node.body)]));
+        }
+
         sxAttributes.forEach((sxAttribute) => {
           let newStyleValue;
           const styleAttributeName = attrMaps[sxAttribute.node.name.name];

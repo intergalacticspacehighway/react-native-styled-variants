@@ -30,13 +30,5 @@ function transformToStyles(code) {
 }
 
 transformToStyles(`
-const App = () => {
-  const a = 10;
-  return (
-    <View
-      sx={{ margin: a }}
-      contentContainerSX={{ margin: a }}
-    />
-  );
-};
+const App = (props) => <View sx={{color: "red"}} />
 `);

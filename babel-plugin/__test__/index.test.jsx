@@ -283,4 +283,12 @@ describe('test sx transform plugin', () => {
     const output = transformToStyles(code);
     expect(output).toMatchSnapshot();
   })
+
+  it("arrow function short hand component definition", () => {
+    const code = `
+      const App = () => <View sx={{color: "pink"}} contentContainerSX={{margin: 10}} />
+    `
+    const output = transformToStyles(code);
+    expect(output).toMatchSnapshot();
+  })
 })
