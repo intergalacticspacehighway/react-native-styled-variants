@@ -485,3 +485,25 @@ const App = () => {
   }} />;
 };"
 `;
+
+exports[`test sx transform plugin verify shadow object is added to stylesheet 1`] = `
+"import * as _rnStyledVariants__react from \\"react\\";
+import { StyleSheet as _rnStyledVariants__styleSheet } from \\"react-native\\";
+
+const App = () => {
+  const _styleSheet = _rnStyledVariants__react.useMemo(() => _rnStyledVariants__styleSheet.create({
+    1: {
+      shadowColor: \\"#000\\",
+      shadowOffset: {
+        width: 0,
+        height: 2
+      },
+      shadowOpacity: 0.22,
+      shadowRadius: 2.22,
+      elevation: 2
+    }
+  }), []);
+
+  return <View style={_styleSheet[\\"1\\"]} />;
+};"
+`;

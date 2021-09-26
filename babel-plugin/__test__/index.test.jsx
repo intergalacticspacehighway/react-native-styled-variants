@@ -291,4 +291,22 @@ describe('test sx transform plugin', () => {
     const output = transformToStyles(code);
     expect(output).toMatchSnapshot();
   })
+
+  it("verify shadow object is added to stylesheet", () => {
+    const code = `
+      const App = () => <View sx={{
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.22,
+        shadowRadius: 2.22,
+
+        elevation: 2,
+      }} />
+    `
+    const output = transformToStyles(code);
+    expect(output).toMatchSnapshot();
+  })
 })
