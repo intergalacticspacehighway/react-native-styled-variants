@@ -2,7 +2,6 @@ const template = require('@babel/template').default;
 const t = require('@babel/types');
 const { addNamespace, addNamed } = require('@babel/helper-module-imports');
 
-let importsAdded = false;
 let packageNameSpace = '';
 let styleSheetNameSpace = '';
 let reactNameSpace = '';
@@ -46,7 +45,9 @@ const getThemeTokenFromThemeLiteral = (node, themeIdentifier) => {
 let visitor = {
   'Program'(path) {
     root = path;
-    importsAdded = false;
+    packageNameSpace = '';
+    styleSheetNameSpace = '';
+    reactNameSpace = '';
   },
   'FunctionDeclaration|ArrowFunctionExpression'(path) {
     // Put check if starts with capital name to make sure it's a react component!
@@ -252,24 +253,6 @@ let visitor = {
       },
     });
 
-    if (!importsAdded && foundSXAttribute) {
-      if (hasThemeToken || hasResponsiveToken) {
-        // Adds import * as X from "package"
-        packageNameSpace = addNamespace(root, source, {
-          nameHint: PACKAGE_NAMESPACE_HINT,
-        }).name;
-      }
-
-      styleSheetNameSpace = addNamed(root, 'StyleSheet', 'react-native', {
-        nameHint: PACKAGE_NAMESPACE_HINT + '_styleSheet',
-      }).name;
-      // Adds import * as Y from "react"
-      reactNameSpace = addNamespace(root, 'react', {
-        nameHint: PACKAGE_NAMESPACE_HINT + '_react',
-      }).name;
-      importsAdded = true;
-    }
-
     if (styleSheet.properties.length) {
       let memoArray = [];
       if (hasThemeStyleSheet) {
@@ -278,6 +261,20 @@ let visitor = {
       if (hasResponsiveStyleSheet) {
         memoArray.push(resolveResponsiveValueMemberExpression);
       }
+
+      if (!reactNameSpace) {
+        // Adds import * as Y from "react"
+        reactNameSpace = addNamespace(root, 'react', {
+          nameHint: PACKAGE_NAMESPACE_HINT + '_react',
+        }).name;
+      }
+
+      if (!styleSheetNameSpace) {
+        styleSheetNameSpace = addNamed(root, 'StyleSheet', 'react-native', {
+          nameHint: PACKAGE_NAMESPACE_HINT + '_styleSheet',
+        }).name;
+      }
+
       const styleSheetMemoized = t.callExpression(
         t.memberExpression(
           t.identifier(reactNameSpace),
@@ -309,6 +306,13 @@ let visitor = {
     }
 
     if (hasThemeToken) {
+      if (!packageNameSpace) {
+        // Adds import * as X from "package"
+        packageNameSpace = addNamespace(root, source, {
+          nameHint: PACKAGE_NAMESPACE_HINT,
+        }).name;
+      }
+
       path.get('body').unshiftContainer(
         'body',
         buildThemeTemplate({
@@ -319,6 +323,13 @@ let visitor = {
     }
 
     if (hasResponsiveToken) {
+      if (!packageNameSpace) {
+        // Adds import * as X from "package"
+        packageNameSpace = addNamespace(root, source, {
+          nameHint: PACKAGE_NAMESPACE_HINT,
+        }).name;
+      }
+
       path.get('body').unshiftContainer(
         'body',
         buildBreakPointTemplate({

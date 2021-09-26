@@ -8,27 +8,29 @@ const source = 'react-native-styled-variants';
 const PACKAGE_NAMESPACE_HINT = '_rnStyledVariants_';
 
 let root;
-let importsAdded = false;
 let packageNameSpace = '';
 let reactNameSpace = '';
 const visitor = {
   Program(path) {
     root = path;
-    importsAdded = false;
+    packageNameSpace = '';
+    reactNameSpace = '';
   },
   // Traverse for call expression beginning with `styled()`
   CallExpression(path, state) {
     if (path.node.callee.name === 'createVariant') {
-      if (!importsAdded) {
+      if (!packageNameSpace) {
         // Adds import * as X from "package"
         packageNameSpace = addNamespace(root, source, {
           nameHint: PACKAGE_NAMESPACE_HINT,
         }).name;
+      }
+
+      if (!reactNameSpace) {
         // Adds import * as Y from "react"
         reactNameSpace = addNamespace(root, 'react', {
           nameHint: PACKAGE_NAMESPACE_HINT + '_react',
         }).name;
-        importsAdded = true;
       }
 
       let hasResponsiveStyles = false;

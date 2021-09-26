@@ -11,7 +11,6 @@ function transformToStyles(code) {
   });
 
   traverse(ast, {
-    ...visitor,
     'Program'(path) {
       visitor.Program(path);
       utilityPropVisitor.Program(path);
@@ -21,6 +20,9 @@ function transformToStyles(code) {
         path,
         state
       );
+    },
+    'CallExpression'(path, state) {
+      visitor.CallExpression(path, state);
     },
   });
 

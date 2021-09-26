@@ -4,7 +4,6 @@ const utilityPropVisitor = require('./utility-prop-visitor');
 function transformer() {
   return {
     visitor: {
-      ...visitor,
       'Program'(path) {
         visitor.Program(path);
         utilityPropVisitor.Program(path);
@@ -14,6 +13,9 @@ function transformer() {
           path,
           state
         );
+      },
+      'CallExpression'(path, state) {
+        visitor.CallExpression(path, state);
       },
     },
   };

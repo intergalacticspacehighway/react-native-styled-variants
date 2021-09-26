@@ -59,10 +59,11 @@ const breakpoints = {
   '2xl': 1536,
 };
 
-export const { createVariant, ThemeProvider } = createTheme({
-  theme,
-  breakpoints,
-});
+export const { createVariant, ThemeProvider, useCurrentBreakpoint, useTheme } =
+  createTheme({
+    theme,
+    breakpoints,
+  });
 
 export type ITheme = typeof theme;
 export type IBreakpoints = typeof breakpoints;
