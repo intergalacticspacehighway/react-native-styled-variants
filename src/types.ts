@@ -58,9 +58,9 @@ export type RNStyles<Theme, BreakPoints> = ExtendStyleWithBreakpointValues<
 >;
 
 interface AllStyles<Theme, Breakpoints> extends RNStyles<Theme, Breakpoints> {
-  _hover?: RNStyles<Theme, Breakpoints>;
+  _hovered?: RNStyles<Theme, Breakpoints>;
   _pressed?: RNStyles<Theme, Breakpoints>;
-  _focus?: RNStyles<Theme, Breakpoints>;
+  _focused?: RNStyles<Theme, Breakpoints>;
 }
 
 export interface IStyles<Theme, Breakpoints, DefinedStyles extends IStyle>

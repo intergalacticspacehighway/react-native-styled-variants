@@ -65,7 +65,7 @@ const VariantButton = createVariant(Pressable, {
   _pressed: {
     backgroundColor: '$colors.pressed',
   },
-  _hover: {
+  _hovered: {
     backgroundColor: '$colors.button_hover',
   },
 });

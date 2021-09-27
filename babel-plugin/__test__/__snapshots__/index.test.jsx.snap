@@ -93,7 +93,7 @@ const StyledPressable = _rnStyledVariants__react.forwardRef((props, ref) => {
     currentBreakpoint,
     getClosestResponsiveValue
   }) => ({
-    baseStyle_focus: {
+    baseStyle_focused: {
       backgroundColor: theme[\\"colors\\"][\\"pressed\\"]
     },
     baseStyle: {
@@ -103,7 +103,7 @@ const StyledPressable = _rnStyledVariants__react.forwardRef((props, ref) => {
   }), [\\"theme\\"]);
 
   const style = _rnStyledVariants__react.useMemo(() => {
-    const newStyle = [styleSheet.baseStyle, isFocused ? styleSheet.baseStyle_focus : undefined, propStyle].filter(Boolean);
+    const newStyle = [styleSheet.baseStyle, isFocused ? styleSheet.baseStyle_focused : undefined, propStyle].filter(Boolean);
     return newStyle;
   }, [styleSheet, isFocused, propStyle]);
 
@@ -125,14 +125,14 @@ const StyledPressable = _rnStyledVariants__react.forwardRef((props, ref) => {
     currentBreakpoint,
     getClosestResponsiveValue
   }) => ({
-    baseStyle_focus: {
+    baseStyle_focused: {
       backgroundColor: theme[\\"colors\\"][\\"pressed\\"]
     },
     baseStyle: {
       padding: theme[\\"space\\"][\\"3\\"],
       backgroundColor: theme[\\"colors\\"][\\"primary\\"]
     },
-    checked_true_focus: {
+    checked_true_focused: {
       backgroundColor: theme[\\"colors\\"][\\"pressed_checked\\"]
     },
     checked_true: {}
@@ -141,7 +141,7 @@ const StyledPressable = _rnStyledVariants__react.forwardRef((props, ref) => {
   const style = _rnStyledVariants__react.useMemo(() => {
     const newStyle = [styleSheet.baseStyle, 
             styleSheet[\`checked_\${checked}\`]
-        , isFocused ? styleSheet.baseStyle_focus : undefined, isFocused ? styleSheet[\`checked_\${checked}_focus\`] : undefined, propStyle].filter(Boolean);
+        , isFocused ? styleSheet.baseStyle_focused : undefined, isFocused ? styleSheet[\`checked_\${checked}_focused\`] : undefined, propStyle].filter(Boolean);
     return newStyle;
   }, [styleSheet, isFocused, checked, propStyle]);
 
@@ -163,7 +163,7 @@ const StyledPressable = _rnStyledVariants__react.forwardRef((props, ref) => {
     currentBreakpoint,
     getClosestResponsiveValue
   }) => ({
-    baseStyle_hover: {
+    baseStyle_hovered: {
       backgroundColor: theme[\\"colors\\"][\\"hover\\"]
     },
     baseStyle: {
@@ -178,7 +178,7 @@ const StyledPressable = _rnStyledVariants__react.forwardRef((props, ref) => {
   const style = _rnStyledVariants__react.useMemo(() => {
     const newStyle = [styleSheet.baseStyle, 
             styleSheet[\`color_\${color}\`]
-        , isHovered ? styleSheet.baseStyle_hover : undefined, propStyle].filter(Boolean);
+        , isHovered ? styleSheet.baseStyle_hovered : undefined, propStyle].filter(Boolean);
     return newStyle;
   }, [styleSheet, isHovered, color, propStyle]);
 

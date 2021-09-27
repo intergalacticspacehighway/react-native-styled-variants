@@ -7,6 +7,10 @@ const source = 'react-native-styled-variants';
 
 const PACKAGE_NAMESPACE_HINT = '_rnStyledVariants_';
 
+const hoverPropName = '_hovered';
+const focusPropName = '_focused';
+const pressPropName = '_pressed';
+
 let root;
 let packageNameSpace = '';
 let reactNameSpace = '';
@@ -62,23 +66,23 @@ const visitor = {
       const baseStyleProperties = styleObjectExpression.properties
         .filter((prop) => prop.key.name !== 'variants')
         .filter((p) => p.key.name !== 'defaultVariants')
-        .filter((p) => p.key.name !== '_hover')
-        .filter((p) => p.key.name !== '_focus')
-        .filter((p) => p.key.name !== '_pressed');
+        .filter((p) => p.key.name !== hoverPropName)
+        .filter((p) => p.key.name !== focusPropName)
+        .filter((p) => p.key.name !== pressPropName);
 
       // Base hover style property.
       const baseHoverStyleProperty = styleObjectExpression.properties.filter(
-        (p) => p.key.name === '_hover'
+        (p) => p.key.name === hoverPropName
       )[0];
 
       // Base pressed style property.
       const basePressedStyleProperty = styleObjectExpression.properties.filter(
-        (p) => p.key.name === '_pressed'
+        (p) => p.key.name === pressPropName
       )[0];
 
       // Base focus style property.
       const baseFocusStyleProperty = styleObjectExpression.properties.filter(
-        (p) => p.key.name === '_focus'
+        (p) => p.key.name === focusPropName
       )[0];
 
       // Empty style properties. We'll start filling it from scratch
@@ -86,12 +90,12 @@ const visitor = {
       styleObjectExpression.properties = [];
 
       // Flattens base hover styles
-      // Converts {_hover: {}} => {baseStyle_hover: {}}
+      // Converts {_hovered: {}} => {baseStyle_hovered: {}}
       if (baseHoverStyleProperty) {
         hasBaseHoverStyles = true;
         styleObjectExpression.properties.push(
           t.objectProperty(
-            t.identifier('baseStyle_hover'),
+            t.identifier(`baseStyle${hoverPropName}`),
             baseHoverStyleProperty.value
           )
         );
@@ -103,19 +107,19 @@ const visitor = {
         hasBasePressedStyles = true;
         styleObjectExpression.properties.push(
           t.objectProperty(
-            t.identifier('baseStyle_pressed'),
+            t.identifier(`baseStyle${pressPropName}`),
             basePressedStyleProperty.value
           )
         );
       }
 
       // Flattens base pressed styles
-      // Converts {_focus: {}} => {baseStyle_focus: {}}
+      // Converts {_focused: {}} => {baseStyle_focused: {}}
       if (baseFocusStyleProperty) {
         hasBaseFocusStyles = true;
         styleObjectExpression.properties.push(
           t.objectProperty(
-            t.identifier('baseStyle_focus'),
+            t.identifier(`baseStyle${focusPropName}`),
             baseFocusStyleProperty.value
           )
         );
@@ -143,7 +147,7 @@ const visitor = {
       // }
       if (variants) {
         hasVariants = true;
-        // Variants  {checked: {true: {backgroundColor:"x", _hover: {backgroundColor: "y"}}}}
+        // Variants  {checked: {true: {backgroundColor:"x", _hovered: {backgroundColor: "y"}}}}
         [...variants.value.properties].forEach((variantProp, index) => {
           const variantName = variantProp.key.name;
           variantsIdentifier.push(variantName);
@@ -154,29 +158,29 @@ const visitor = {
 
             const variantHoverObjectProperty =
               nestedVariant.value.properties.filter((p) => {
-                return p.key.name === '_hover';
+                return p.key.name === hoverPropName;
               })[0];
 
             const variantPressedObjectProperty =
               nestedVariant.value.properties.filter((p) => {
-                return p.key.name === '_pressed';
+                return p.key.name === pressPropName;
               })[0];
 
             const variantFocusObjectProperty =
               nestedVariant.value.properties.filter((p) => {
-                return p.key.name === '_focus';
+                return p.key.name === focusPropName;
               })[0];
 
-            // Remove _hover from nested variant props i.i
+            // Remove _hovered from nested variant props i.i
             nestedVariant.value.properties = nestedVariant.value.properties
-              .filter((p) => p.key.name !== '_hover')
-              .filter((p) => p.key.name !== '_focus')
-              .filter((p) => p.key.name !== '_pressed');
+              .filter((p) => p.key.name !== hoverPropName)
+              .filter((p) => p.key.name !== focusPropName)
+              .filter((p) => p.key.name !== pressPropName);
 
             if (variantHoverObjectProperty) {
               hasVariantsHoverStyles = true;
               const variantHoverId = t.identifier(
-                variantName + '_' + variantValueName + '_hover'
+                variantName + '_' + variantValueName + hoverPropName
               );
               styleObjectExpression.properties.push(
                 t.objectProperty(
@@ -189,7 +193,7 @@ const visitor = {
             if (variantFocusObjectProperty) {
               hasVariantsFocusStyles = true;
               const variantFocusId = t.identifier(
-                variantName + '_' + variantValueName + '_focus'
+                variantName + '_' + variantValueName + focusPropName
               );
               styleObjectExpression.properties.push(
                 t.objectProperty(
@@ -202,7 +206,7 @@ const visitor = {
             if (variantPressedObjectProperty) {
               hasVariantsPressedStyles = true;
               const variantPressedId = t.identifier(
-                variantName + '_' + variantValueName + '_pressed'
+                variantName + '_' + variantValueName + pressPropName
               );
               styleObjectExpression.properties.push(
                 t.objectProperty(
@@ -212,7 +216,7 @@ const visitor = {
               );
             }
 
-            // After removing _hover, _pressed append rest flattened styles in styleObjectExpression
+            // After removing _hovered, _pressed append rest flattened styles in styleObjectExpression
             const newId = t.identifier(variantName + '_' + variantValueName);
             styleObjectExpression.properties.push(
               t.objectProperty(newId, nestedVariant.value)
@@ -354,19 +358,22 @@ const visitor = {
 
       const variantHoverStyles = variantsIdentifier
         .map(
-          (v) => `isHovered ? styleSheet[\`${v}_\${${v}}_hover\`] : undefined`
+          (v) =>
+            `isHovered ? styleSheet[\`${v}_\${${v}}${hoverPropName}\`] : undefined`
         )
         .join(',');
 
       const variantPressedStyles = variantsIdentifier
         .map(
-          (v) => `isPressed ? styleSheet[\`${v}_\${${v}}_pressed\`] : undefined`
+          (v) =>
+            `isPressed ? styleSheet[\`${v}_\${${v}}${pressPropName}\`] : undefined`
         )
         .join(',');
 
       const variantFocusStyles = variantsIdentifier
         .map(
-          (v) => `isFocused ? styleSheet[\`${v}_\${${v}}_focus\`] : undefined`
+          (v) =>
+            `isFocused ? styleSheet[\`${v}_\${${v}}${focusPropName}\`] : undefined`
         )
         .join(',');
 
@@ -458,7 +465,7 @@ const visitor = {
       if (hasBaseFocusStyles) {
         substitutions.STYLES =
           substitutions.STYLES +
-          `, isFocused ? styleSheet.baseStyle_focus : undefined`;
+          `, isFocused ? styleSheet.baseStyle${focusPropName} : undefined`;
       }
 
       if (hasVariantsFocusStyles) {
@@ -468,7 +475,7 @@ const visitor = {
       if (hasBaseHoverStyles) {
         substitutions.STYLES =
           substitutions.STYLES +
-          `, isHovered ? styleSheet.baseStyle_hover : undefined`;
+          `, isHovered ? styleSheet.baseStyle${hoverPropName} : undefined`;
       }
 
       if (hasVariantsHoverStyles) {
@@ -478,7 +485,7 @@ const visitor = {
       if (hasBasePressedStyles) {
         substitutions.STYLES =
           substitutions.STYLES +
-          `, isPressed ? styleSheet.baseStyle_pressed : undefined`;
+          `, isPressed ? styleSheet.baseStyle${pressPropName} : undefined`;
       }
 
       if (hasVariantsPressedStyles) {
