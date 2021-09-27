@@ -79,7 +79,7 @@ describe('test createVariant transform plugin', () => {
     const StyledPressable = createVariant(Pressable, {
       padding: "$space.3",
       backgroundColor: "$colors.blue.800",
-      _hover: {
+      _hovered: {
         backgroundColor: "$colors.hover",
       },
       variants: {
@@ -137,7 +137,7 @@ describe('test createVariant transform plugin', () => {
     const StyledPressable = createVariant(Pressable, {
       padding: "$space.3",
       backgroundColor: "$colors.primary",
-      _focus: {
+      _focused: {
         backgroundColor: "$colors.pressed",
       },
     });
@@ -151,13 +151,13 @@ describe('test createVariant transform plugin', () => {
     const StyledPressable = createVariant(Pressable, {
       padding: "$space.3",
       backgroundColor: "$colors.primary",
-      _focus: {
+      _focused: {
         backgroundColor: "$colors.pressed",
       },
       variants: {
         checked: {
           true: {
-            _focus: {
+            _focused: {
               backgroundColor: "$colors.pressed_checked",
             },
           }

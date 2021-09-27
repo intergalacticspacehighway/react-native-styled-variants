@@ -68,13 +68,13 @@ const Screen = () => {
         }}
       >
         <Button onPress={changeImage} accessibilityRole="button">
-          {({ pressed }) => {
+          {({ pressed, hovered, focused }: any) => {
             return (
               <StyledText
                 uppercase
                 bold
                 sx={
-                  pressed
+                  pressed || hovered || focused
                     ? {
                         color: Platform.select({
                           web: '$colors.white',
@@ -147,11 +147,14 @@ const Button = createVariant(Pressable, {
   borderColor: '$colors.red.2',
   width: Platform.select({ web: 250, default: '80%' as any }),
   alignItems: 'center',
-  _hover: {
+  _hovered: {
     backgroundColor: '$colors.red.0',
   },
   _pressed: {
     backgroundColor: '$colors.red.1',
+  },
+  _focused: {
+    backgroundColor: '$colors.red.2',
   },
 });
 
